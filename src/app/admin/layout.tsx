@@ -16,7 +16,7 @@ export default function AdminLayout({
   return (
     <div className="flex min-h-screen flex-col w-full">
       <AdminHeader />
-      <div className="flex-1 w-full">{children}</div>
+      <div className="flex w-full items-center justify-center">{children}</div>
     </div>
   );
 }

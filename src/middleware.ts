@@ -13,7 +13,14 @@ const isCategoryProductRoute = createRouteMatcher(
 export default clerkMiddleware(async (auth, req) => {
   // Protect admin routes - require authentication
   if (isAdminRoute(req)) {
-    await auth.protect();
+    try {
+      // This will automatically redirect to the sign-in page if the user is not authenticated
+      await auth.protect();
+    } catch (error) {
+      // If auth.protect() throws an error, redirect to our custom login page
+      const loginUrl = new URL("/admin/login", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   // Handle redirects for old product URLs
