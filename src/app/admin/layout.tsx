@@ -14,9 +14,9 @@ export default function AdminLayout({
   // We'll rely on middleware.ts for authentication protection
   // and simply render the header for all admin pages
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col w-full">
       <AdminHeader />
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 w-full">{children}</div>
     </div>
   );
 }

@@ -1,55 +1,119 @@
+"use client";
+
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
+  ExternalLink,
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function AdminHeader() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    {
+      href: "/admin/dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      active: true,
+    },
+    { href: "/admin/dashboard/products", label: "Produk", icon: Package },
+    { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
+    { href: "/admin/dashboard/customers", label: "Pelanggan", icon: Users },
+    { href: "/admin/dashboard/settings", label: "Pengaturan", icon: Settings },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <span className="font-bold">SaletaFood Admin</span>
-        </Link>
-        <nav className="flex items-center space-x-6 text-sm font-medium">
-          <Link
-            href="/admin/dashboard"
-            className="transition-colors hover:text-foreground/80 text-foreground"
-          >
-            Dashboard
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex h-14 items-center justify-between">
+        <div className="flex items-center">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            <span className="font-bold">SaletaFood Admin</span>
           </Link>
-          <Link
-            href="/admin/dashboard/products"
-            className="transition-colors hover:text-foreground/80 text-foreground/60"
-          >
-            Produk
-          </Link>
-          <Link
-            href="/admin/dashboard/orders"
-            className="transition-colors hover:text-foreground/80 text-foreground/60"
-          >
-            Pesanan
-          </Link>
-          <Link
-            href="/admin/dashboard/customers"
-            className="transition-colors hover:text-foreground/80 text-foreground/60"
-          >
-            Pelanggan
-          </Link>
-          <Link
-            href="/admin/dashboard/settings"
-            className="transition-colors hover:text-foreground/80 text-foreground/60"
-          >
-            Pengaturan
-          </Link>
-        </nav>
-        <div className="ml-auto flex items-center space-x-4">
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "transition-colors hover:text-foreground/80 flex items-center gap-1.5",
+                  item.active ? "text-foreground" : "text-foreground/60"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center space-x-4">
           <Link
             href="/"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="hidden sm:flex text-sm font-medium transition-colors hover:text-primary items-center gap-1.5"
           >
-            Lihat Situs
+            <ExternalLink className="h-4 w-4" />
+            <span>Lihat Situs</span>
           </Link>
           <UserButton />
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle menu</span>
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t">
+          <nav className="flex flex-col py-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors hover:bg-muted",
+                  item.active ? "text-foreground" : "text-foreground/60"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors hover:bg-muted text-foreground/60"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <ExternalLink className="h-4 w-4" />
+              Lihat Situs
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
