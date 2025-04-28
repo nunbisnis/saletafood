@@ -51,7 +51,7 @@ export function Navbar() {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            {/* Cart button */}
+            {/* Cart button
             <Link
               href="/cart"
               className="relative p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
@@ -75,7 +75,7 @@ export function Navbar() {
               <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-orange-500 text-xs text-white flex items-center justify-center">
                 0
               </span>
-            </Link>
+            </Link> */}
 
             {/* Mobile menu button */}
             <button

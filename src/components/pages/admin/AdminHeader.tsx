@@ -26,22 +26,25 @@ export function AdminHeader() {
       icon: LayoutDashboard,
       active: true,
     },
-    { href: "/admin/dashboard/products", label: "Produk", icon: Package },
-    { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
-    { href: "/admin/dashboard/customers", label: "Pelanggan", icon: Users },
-    { href: "/admin/dashboard/settings", label: "Pengaturan", icon: Settings },
+    // { href: "/admin/dashboard/products", label: "Produk", icon: Package },
+    // { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
+    // { href: "/admin/dashboard/customers", label: "Pelanggan", icon: Users },
+    // { href: "/admin/dashboard/settings", label: "Pengaturan", icon: Settings },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="w-full px-4 sm:px-6 lg:px-8 flex h-14 items-center justify-between">
-        <div className="flex items-center">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
+    <header className="sticky top-16 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+        {/* Logo */}
+        <div className="flex-shrink-0">
+          <Link href="/" className="flex items-center space-x-2">
             <span className="font-bold">SaletaFood Admin</span>
           </Link>
+        </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+        {/* Desktop Navigation - Centered */}
+        <nav className="hidden md:flex items-center justify-center flex-1 mx-4">
+          <div className="flex items-center space-x-6 text-sm font-medium">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -55,9 +58,10 @@ export function AdminHeader() {
                 {item.label}
               </Link>
             ))}
-          </nav>
-        </div>
+          </div>
+        </nav>
 
+        {/* Right side actions */}
         <div className="flex items-center space-x-4">
           <Link
             href="/"
