@@ -31,7 +31,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 aria-label="Instagram"
-                className="text-muted-foreground hover:text-orange-500 transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Instagram size={20} />
               </Link>
@@ -39,7 +39,7 @@ export function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 aria-label="Facebook"
-                className="text-muted-foreground hover:text-orange-500 transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Facebook size={20} />
               </Link>
