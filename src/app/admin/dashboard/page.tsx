@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 // Sample product data
 const products = [
@@ -43,6 +44,13 @@ const products = [
 ];
 
 export default async function AdminDashboardPage() {
+  // Check if user is authenticated
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/admin/login");
+  }
+
+  // Get user details
   const user = await currentUser();
 
   return (
