@@ -26,15 +26,13 @@ import {
 import { getProductBySlug, getRelatedProducts } from "@/data/products";
 import { categories } from "@/data/categories";
 
-type Props = {
-  params: {
-    category: string;
-    slug: string;
-  };
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = getProductBySlug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string; slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -48,15 +46,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ProductDetailPage({ params }: Props) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ category: string; slug: string }>;
+}) {
+  const { category, slug } = await params;
+  const product = getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
   // Verify that the product is in the correct category
-  const categoryParam = decodeURIComponent(params.category).toLowerCase();
+  const categoryParam = decodeURIComponent(category).toLowerCase();
   const productCategory = product.category.toLowerCase();
 
   if (categoryParam !== productCategory) {
@@ -328,7 +331,10 @@ export default function ProductDetailPage({ params }: Props) {
                 key={item.id}
                 className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40"
               >
-                <Link href={`/${item.category.toLowerCase()}/${item.slug}`} className="block">
+                <Link
+                  href={`/${item.category.toLowerCase()}/${item.slug}`}
+                  className="block"
+                >
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image
                       src={item.image}
@@ -350,7 +356,10 @@ export default function ProductDetailPage({ params }: Props) {
                 </Link>
 
                 <CardHeader className="pb-2">
-                  <Link href={`/${item.category.toLowerCase()}/${item.slug}`} className="block">
+                  <Link
+                    href={`/${item.category.toLowerCase()}/${item.slug}`}
+                    className="block"
+                  >
                     <CardTitle className="text-lg hover:text-primary transition-colors">
                       {item.name}
                     </CardTitle>

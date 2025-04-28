@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
 import { getProductBySlug } from "@/data/products";
+import { use } from "react";
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
-
-export default function ProductRedirect({ params }: Props) {
-  const product = getProductBySlug(params.slug);
+export default function ProductRedirect({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = use(params);
+  const product = getProductBySlug(slug);
 
   if (product) {
     // Redirect to the new URL format

@@ -21,55 +21,60 @@ import { ProductFilters } from "@/components/product/product-filters";
 import { getProductsByCategory } from "@/data/products";
 import { categories } from "@/data/categories";
 
-type Props = {
-  params: {
-    category: string;
-  };
-  searchParams: {
-    sort?: string;
-    filter?: string;
-  };
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}): Promise<Metadata> {
   // Find the category from our categories data
-  const categoryName = decodeURIComponent(params.category);
-  const category = categories.find(
+  const { category } = await params;
+  const categoryName = decodeURIComponent(category);
+  const categoryData = categories.find(
     (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
   );
 
-  if (!category) {
+  if (!categoryData) {
     return {
       title: "Kategori Tidak Ditemukan - SaletaFood",
     };
   }
 
   return {
-    title: `${category.name} - SaletaFood`,
-    description: `Jelajahi menu ${category.name} kami yang lezat. ${category.description}`,
+    title: `${categoryData.name} - SaletaFood`,
+    description: `Jelajahi menu ${categoryData.name} kami yang lezat. ${categoryData.description}`,
   };
 }
 
-export default function CategoryPage({ params, searchParams }: Props) {
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ category: string }>;
+  searchParams: Promise<{ sort?: string; filter?: string }>;
+}) {
   // Get the category name from the URL
-  const categoryName = decodeURIComponent(params.category);
+  const { category } = await params;
+  const categoryName = decodeURIComponent(category);
 
   // Find the category from our categories data
-  const category = categories.find(
+  const categoryData = categories.find(
     (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
   );
 
   // If category doesn't exist, show 404
-  if (!category) {
+  if (!categoryData) {
     notFound();
   }
 
   // Get products for this category
-  let products = getProductsByCategory(category.name);
+  let products = getProductsByCategory(categoryData.name);
+
+  // Get search params
+  const searchParamsData = await searchParams;
 
   // Apply sorting if specified
-  if (searchParams.sort) {
-    switch (searchParams.sort) {
+  if (searchParamsData.sort) {
+    switch (searchParamsData.sort) {
       case "price-low":
         products = [...products].sort((a, b) => a.price - b.price);
         break;
@@ -93,8 +98,8 @@ export default function CategoryPage({ params, searchParams }: Props) {
   }
 
   // Apply filtering if specified
-  if (searchParams.filter) {
-    switch (searchParams.filter) {
+  if (searchParamsData.filter) {
+    switch (searchParamsData.filter) {
       case "available":
         products = products.filter((p) => p.status === "Tersedia");
         break;
@@ -129,15 +134,15 @@ export default function CategoryPage({ params, searchParams }: Props) {
             </Link>
           </li>
           <li className="text-muted-foreground">/</li>
-          <li className="text-foreground font-medium">{category.name}</li>
+          <li className="text-foreground font-medium">{categoryData.name}</li>
         </ol>
       </nav>
 
       {/* Category Header */}
       <div className="relative h-64 rounded-xl overflow-hidden mb-8">
         <Image
-          src={category.image}
-          alt={category.name}
+          src={categoryData.image}
+          alt={categoryData.name}
           fill
           className="object-cover"
           priority
@@ -145,17 +150,17 @@ export default function CategoryPage({ params, searchParams }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 flex items-center">
           <div className="container px-6">
             <div className="flex items-center space-x-4">
-              <div className={`p-3 rounded-full ${category.bgColor}`}>
-                <category.icon
-                  className={`h-8 w-8 text-gradient bg-gradient-to-r ${category.color}`}
+              <div className={`p-3 rounded-full ${categoryData.bgColor}`}>
+                <categoryData.icon
+                  className={`h-8 w-8 text-gradient bg-gradient-to-r ${categoryData.color}`}
                 />
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  {category.name}
+                  {categoryData.name}
                 </h1>
                 <p className="text-white/80 max-w-2xl">
-                  {category.description}
+                  {categoryData.description}
                 </p>
               </div>
             </div>
@@ -166,7 +171,7 @@ export default function CategoryPage({ params, searchParams }: Props) {
       {/* Filters and Sorting */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Produk {category.name}</h2>
+          <h2 className="text-2xl font-bold">Produk {categoryData.name}</h2>
           <p className="text-muted-foreground">
             Menampilkan {products.length} item
           </p>
