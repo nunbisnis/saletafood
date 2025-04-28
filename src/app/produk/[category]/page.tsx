@@ -183,7 +183,10 @@ export default function CategoryPage({ params, searchParams }: Props) {
               key={product.id}
               className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40"
             >
-              <Link href={`/products/${product.slug}`} className="block">
+              <Link
+                href={`/${product.category.toLowerCase()}/${product.slug}`}
+                className="block"
+              >
                 <div className="relative h-48 w-full overflow-hidden">
                   <Image
                     src={product.image}
@@ -205,7 +208,10 @@ export default function CategoryPage({ params, searchParams }: Props) {
               </Link>
 
               <CardHeader className="pb-2">
-                <Link href={`/products/${product.slug}`} className="block">
+                <Link
+                  href={`/${product.category.toLowerCase()}/${product.slug}`}
+                  className="block"
+                >
                   <CardTitle className="text-lg hover:text-primary transition-colors">
                     {product.name}
                   </CardTitle>
@@ -218,7 +224,7 @@ export default function CategoryPage({ params, searchParams }: Props) {
                         <Star
                           key={i}
                           className={`h-4 w-4 ${
-                            i < Math.floor(product.rating)
+                            i < Math.floor(product.rating || 0)
                               ? "text-yellow-500 fill-yellow-500"
                               : "text-gray-300"
                           }`}

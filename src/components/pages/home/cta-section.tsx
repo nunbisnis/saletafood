@@ -10,7 +10,7 @@ export function CTASection() {
           Nikmati makanan lezat diantar langsung ke rumah Anda
         </p>
         <Button size="lg" variant="secondary" asChild>
-          <Link href="/menu">Pesan Sekarang</Link>
+          <Link href="/produk">Pesan Sekarang</Link>
         </Button>
       </div>
     </section>

@@ -12,7 +12,6 @@ export default function Home() {
       <HeroSection />
       <FeaturedItems />
       <CategoriesSection />
-      <TestimonialsSection />
       <CTASection />
     </div>
   );

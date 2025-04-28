@@ -77,7 +77,7 @@ export function CategoriesSection() {
                   </p>
                   <div className="mt-auto">
                     <span className="text-primary font-medium flex items-center text-sm group-hover:underline">
-                      Lihat Menu
+                      Lihat Produk
                       <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
