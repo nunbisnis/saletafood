@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+body {
+  font-size: 16px; /* Default font size */
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
