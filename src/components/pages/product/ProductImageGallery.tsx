@@ -1,0 +1,32 @@
+import Image from "next/image";
+import { Product } from "@/data/products";
+
+interface ProductImageGalleryProps {
+  product: Product;
+}
+
+export function ProductImageGallery({ product }: ProductImageGalleryProps) {
+  return (
+    <div className="relative">
+      <div className="relative h-[400px] rounded-xl overflow-hidden">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-cover"
+          priority
+        />
+        {product.status === "Stok Menipis" && (
+          <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            Stok Menipis
+          </div>
+        )}
+        {product.status === "Habis" && (
+          <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            Habis
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
