@@ -23,7 +23,7 @@ export default function ProductNotFound() {
           <Button size="lg" asChild className="w-full">
             <Link href="/produk">Lihat Produk Kami</Link>
           </Button>
-          <Button variant="outline" asChild className="w-full">
+          <Button variant="outline" size="lg" asChild className="w-full">
             <Link href="/">Kembali ke Beranda</Link>
           </Button>
         </CardFooter>

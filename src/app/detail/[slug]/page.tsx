@@ -12,7 +12,7 @@ import {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ category: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
@@ -32,20 +32,12 @@ export async function generateMetadata({
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ category: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { category, slug } = await params;
+  const { slug } = await params;
   const product = getProductBySlug(slug);
 
   if (!product) {
-    notFound();
-  }
-
-  // Verify that the product is in the correct category
-  const categoryParam = decodeURIComponent(category).toLowerCase();
-  const productCategory = product.category.toLowerCase();
-
-  if (categoryParam !== productCategory) {
     notFound();
   }
 

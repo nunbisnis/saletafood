@@ -23,10 +23,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           key={product.id}
           className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40"
         >
-          <Link
-            href={`/${product.category.toLowerCase()}/${product.slug}`}
-            className="block"
-          >
+          <Link href={`/detail/${product.slug}`} className="block">
             <div className="relative h-48 w-full overflow-hidden">
               <Image
                 src={product.image}
@@ -48,10 +45,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           </Link>
 
           <CardHeader className="pb-2">
-            <Link
-              href={`/${product.category.toLowerCase()}/${product.slug}`}
-              className="block"
-            >
+            <Link href={`/detail/${product.slug}`} className="block">
               <CardTitle className="text-lg hover:text-primary transition-colors">
                 {product.name}
               </CardTitle>

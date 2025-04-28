@@ -77,17 +77,6 @@ export function Navbar() {
               </span>
             </Link>
 
-            {/* Admin button */}
-            <Link href="/admin/login">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-700 hover:text-orange-500 hover:bg-orange-50"
-              >
-                Admin
-              </Button>
-            </Link>
-
             {/* Mobile menu button */}
             <button
               type="button"

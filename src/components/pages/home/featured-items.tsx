@@ -39,10 +39,7 @@ export function FeaturedItems() {
               key={item.id}
               className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40"
             >
-              <Link
-                href={`/${item.category.toLowerCase()}/${item.slug}`}
-                className="block"
-              >
+              <Link href={`/detail/${item.slug}`} className="block">
                 <div className="relative h-48 w-full overflow-hidden">
                   <Image
                     src={item.image}
@@ -64,10 +61,7 @@ export function FeaturedItems() {
               </Link>
 
               <CardHeader className="pb-2">
-                <Link
-                  href={`/${item.category.toLowerCase()}/${item.slug}`}
-                  className="block"
-                >
+                <Link href={`/detail/${item.slug}`} className="block">
                   <CardTitle className="text-lg hover:text-primary transition-colors">
                     {item.name}
                   </CardTitle>
