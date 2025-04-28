@@ -8,12 +8,12 @@ import { categories } from "@/data/categories";
 import { getProductsByCategory } from "@/data/products";
 
 export const metadata: Metadata = {
-  title: "Menu - SaletaFood",
+  title: "Produk - SaletaFood",
   description:
-    "Jelajahi menu lengkap kami dengan berbagai pilihan makanan dan minuman lezat",
+    "Jelajahi produk lengkap kami dengan berbagai pilihan makanan dan minuman lezat",
 };
 
-export default function MenuPage() {
+export default function ProdukPage() {
   // Update category counts from actual product data
   const categoriesWithCounts = categories.map((category) => {
     const count = getProductsByCategory(category.name).length;
@@ -34,7 +34,7 @@ export default function MenuPage() {
             </Link>
           </li>
           <li className="text-muted-foreground">/</li>
-          <li className="text-foreground font-medium">Menu</li>
+          <li className="text-foreground font-medium">Produk</li>
         </ol>
       </nav>
 
@@ -42,7 +42,7 @@ export default function MenuPage() {
       <div className="relative h-80 rounded-xl overflow-hidden mb-12">
         <Image
           src="https://cdn.pixabay.com/photo/2017/02/15/10/39/food-2068217_1280.jpg"
-          alt="Menu SaletaFood"
+          alt="Produk SaletaFood"
           fill
           className="object-cover"
           priority
@@ -51,7 +51,7 @@ export default function MenuPage() {
           <div className="container px-6">
             <div className="max-w-2xl">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Menu SaletaFood
+                Produk SaletaFood
               </h1>
               <p className="text-white/80 text-lg mb-6">
                 Jelajahi berbagai pilihan makanan dan minuman lezat kami
@@ -66,12 +66,12 @@ export default function MenuPage() {
 
       {/* Categories Grid */}
       <div className="mb-16">
-        <h2 className="text-2xl font-bold mb-8">Kategori Menu</h2>
+        <h2 className="text-2xl font-bold mb-8">Kategori Produk</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categoriesWithCounts.map((category) => (
             <Link
               key={category.id}
-              href={`/menu/${category.name.toLowerCase()}`}
+              href={`/produk/${category.name.toLowerCase()}`}
               className="block group"
             >
               <div className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-border/40 h-full flex flex-col">
@@ -104,7 +104,7 @@ export default function MenuPage() {
                   </p>
                   <div className="mt-auto">
                     <span className="text-primary font-medium flex items-center text-sm group-hover:underline">
-                      Lihat Menu
+                      Lihat Produk
                       <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
@@ -117,7 +117,7 @@ export default function MenuPage() {
 
       {/* Featured Categories */}
       <div className="mb-16">
-        <h2 className="text-2xl font-bold mb-8">Menu Populer</h2>
+        <h2 className="text-2xl font-bold mb-8">Produk Populer</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Burger Featured */}
           <div className="relative h-64 rounded-xl overflow-hidden group">
@@ -136,7 +136,7 @@ export default function MenuPage() {
                 Nikmati burger juicy dengan berbagai pilihan topping
               </p>
               <Button asChild size="sm" variant="secondary">
-                <Link href="/menu/burger">Lihat Menu Burger</Link>
+                <Link href="/produk/burger">Lihat Produk Burger</Link>
               </Button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function MenuPage() {
                 Pizza dengan adonan tipis dan topping premium
               </p>
               <Button asChild size="sm" variant="secondary">
-                <Link href="/menu/pizza">Lihat Menu Pizza</Link>
+                <Link href="/produk/pizza">Lihat Produk Pizza</Link>
               </Button>
             </div>
           </div>
@@ -180,8 +180,8 @@ export default function MenuPage() {
                 Promo Spesial Bulan Ini
               </h2>
               <p className="text-white/90 mb-6">
-                Dapatkan diskon 20% untuk pembelian menu apa saja dengan minimal
-                pembelian Rp100.000
+                Dapatkan diskon 20% untuk pembelian produk apa saja dengan
+                minimal pembelian Rp100.000
               </p>
               <Button variant="secondary" size="lg">
                 Pesan Sekarang
@@ -196,7 +196,7 @@ export default function MenuPage() {
         {categoriesWithCounts.map((category) => (
           <Link
             key={category.id}
-            href={`/menu/${category.name.toLowerCase()}`}
+            href={`/produk/${category.name.toLowerCase()}`}
             className="flex flex-col items-center p-4 rounded-lg hover:bg-muted transition-colors"
           >
             <div className={`p-3 rounded-full ${category.bgColor} mb-2`}>

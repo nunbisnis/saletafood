@@ -19,16 +19,16 @@ export function FeaturedItems() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <div>
-            <h2 className="text-3xl font-bold">Menu Unggulan</h2>
+            <h2 className="text-3xl font-bold">Produk Unggulan</h2>
             <p className="text-muted-foreground mt-2">
               Pilihan terbaik dari chef kami
             </p>
           </div>
           <Link
-            href="/menu"
+            href="/produk"
             className="mt-4 md:mt-0 text-primary font-medium flex items-center hover:underline"
           >
-            Lihat Semua Menu
+            Lihat Semua Produk
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
@@ -103,7 +103,7 @@ export function FeaturedItems() {
 
         <div className="mt-12 text-center">
           <Button asChild>
-            <Link href="/menu">Lihat Semua Menu</Link>
+            <Link href="/produk">Lihat Semua Produk</Link>
           </Button>
         </div>
       </div>

@@ -22,14 +22,14 @@ export function HeroSection() {
         </p>
         <div className="flex gap-4">
           <Button size="lg" asChild>
-            <Link href="/menu">Pesan Sekarang</Link>
+            <Link href="/produk">Pesan Sekarang</Link>
           </Button>
           <Button
             size="lg"
             variant="outline"
             className="bg-transparent text-white border-white hover:bg-white/10"
           >
-            <Link href="/menu">Lihat Menu</Link>
+            <Link href="/produk">Lihat Produk</Link>
           </Button>
         </div>
       </div>

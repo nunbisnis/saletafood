@@ -26,7 +26,7 @@ export function CategoriesSection() {
             </p>
           </div>
           <Link
-            href="/menu"
+            href="/produk"
             className="mt-4 md:mt-0 text-primary font-medium flex items-center hover:underline"
           >
             Lihat Semua Kategori
@@ -38,7 +38,7 @@ export function CategoriesSection() {
           {categoriesWithCounts.map((category) => (
             <Link
               key={category.id}
-              href={`/menu/${category.name.toLowerCase()}`}
+              href={`/produk/${category.name.toLowerCase()}`}
               className="block group"
             >
               <div className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-border/40 h-full flex flex-col">

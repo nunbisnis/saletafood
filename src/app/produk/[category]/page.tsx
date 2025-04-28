@@ -122,10 +122,10 @@ export default function CategoryPage({ params, searchParams }: Props) {
           <li className="text-muted-foreground">/</li>
           <li>
             <Link
-              href="/menu"
+              href="/produk"
               className="text-muted-foreground hover:text-primary"
             >
-              Menu
+              Produk
             </Link>
           </li>
           <li className="text-muted-foreground">/</li>
@@ -264,7 +264,7 @@ export default function CategoryPage({ params, searchParams }: Props) {
             Tidak ada produk yang cocok dengan filter yang Anda pilih.
           </p>
           <Button asChild variant="outline">
-            <Link href={`/menu/${categoryName.toLowerCase()}`}>
+            <Link href={`/produk/${categoryName.toLowerCase()}`}>
               Reset Filter
             </Link>
           </Button>
@@ -282,7 +282,7 @@ export default function CategoryPage({ params, searchParams }: Props) {
             .map((cat) => (
               <Link
                 key={cat.id}
-                href={`/menu/${cat.name.toLowerCase()}`}
+                href={`/produk/${cat.name.toLowerCase()}`}
                 className="flex flex-col items-center p-4 rounded-lg hover:bg-muted transition-colors"
               >
                 <div className={`p-3 rounded-full ${cat.bgColor} mb-2`}>
@@ -298,12 +298,12 @@ export default function CategoryPage({ params, searchParams }: Props) {
         </div>
       </div>
 
-      {/* Back to Menu */}
+      {/* Back to Produk */}
       <div className="mt-12 text-center">
         <Button variant="outline" asChild>
-          <Link href="/menu" className="flex items-center">
+          <Link href="/produk" className="flex items-center">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Kembali ke Semua Menu
+            Kembali ke Semua Produk
           </Link>
         </Button>
       </div>

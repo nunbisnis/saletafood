@@ -8,14 +8,14 @@ import { Search } from "lucide-react";
 export function ProductSearch() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/menu?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/produk?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-  
+
   return (
     <form onSubmit={handleSearch} className="relative max-w-md">
       <Input

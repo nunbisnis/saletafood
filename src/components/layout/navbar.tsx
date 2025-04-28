@@ -30,10 +30,10 @@ export function Navbar() {
               Beranda
             </Link>
             <Link
-              href="/menu"
+              href="/produk"
               className="text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
             >
-              Menu
+              Produk
             </Link>
             <Link
               href="/about"
@@ -144,11 +144,11 @@ export function Navbar() {
                 Beranda
               </Link>
               <Link
-                href="/menu"
+                href="/produk"
                 className="text-base font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Menu
+                Produk
               </Link>
               <Link
                 href="/about"

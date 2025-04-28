@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,12 +35,13 @@ export default function ProductNotFound() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-6">
-            Maaf, produk yang Anda cari tidak dapat ditemukan. Produk mungkin telah dihapus atau belum tersedia.
+            Maaf, produk yang Anda cari tidak dapat ditemukan. Produk mungkin
+            telah dihapus atau belum tersedia.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
           <Button size="lg" asChild className="w-full">
-            <Link href="/menu">Lihat Menu Kami</Link>
+            <Link href="/produk">Lihat Produk Kami</Link>
           </Button>
           <Button variant="outline" asChild className="w-full">
             <Link href="/">Kembali ke Beranda</Link>
