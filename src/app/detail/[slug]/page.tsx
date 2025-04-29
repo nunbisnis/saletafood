@@ -55,32 +55,22 @@ export default async function ProductDetailPage({
     ? categoryProducts.filter((p) => p.id !== product.id).slice(0, 4)
     : [];
 
-  // Convert Decimal price to string to avoid serialization issues
-  const serializedProduct = {
-    ...product,
-    price: parseFloat(product.price.toString()),
-  };
+  // Product price is already serialized in the getProductBySlug function
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <ProductBreadcrumb product={serializedProduct} />
+      <ProductBreadcrumb product={product} />
 
       {/* Product Detail */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-        <ProductImageGallery product={serializedProduct} />
-        <ProductInfo product={serializedProduct} />
+        <ProductImageGallery product={product} />
+        <ProductInfo product={product} />
       </div>
 
-      <ProductTabs product={serializedProduct} />
+      <ProductTabs product={product} />
 
       {relatedProducts.length > 0 && (
-        <RelatedProducts
-          product={serializedProduct}
-          relatedProducts={relatedProducts.map((p) => ({
-            ...p,
-            price: parseFloat(p.price.toString()),
-          }))}
-        />
+        <RelatedProducts product={product} relatedProducts={relatedProducts} />
       )}
     </div>
   );

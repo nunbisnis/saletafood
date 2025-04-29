@@ -60,7 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
             currency: "IDR",
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-          }).format(parseFloat(product.price.toString()))}
+          }).format(product.price)}
         </span>
         <Button
           size="sm"

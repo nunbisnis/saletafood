@@ -38,7 +38,7 @@ export default async function AdminDashboardPage() {
     ? dbProducts.map((product) => ({
         id: product.id,
         name: product.name,
-        price: parseFloat(product.price.toString()),
+        price: product.price, // Price is already serialized in getProducts
         category: product.category.name,
         status: mapProductStatus(product.status),
         slug: product.slug,

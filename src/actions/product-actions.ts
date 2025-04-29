@@ -17,7 +17,13 @@ export async function getProducts(limit?: number) {
       },
     });
 
-    return { products };
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+    }));
+
+    return { products: serializedProducts };
   } catch (error) {
     console.error("Failed to fetch products:", error);
     return { error: "Failed to fetch products" };
@@ -44,7 +50,13 @@ export async function getProductsByCategory(
       },
     });
 
-    return { products };
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+    }));
+
+    return { products: serializedProducts };
   } catch (error) {
     console.error("Failed to fetch products by category:", error);
     return { error: "Failed to fetch products by category" };
@@ -66,7 +78,13 @@ export async function getProductBySlug(slug: string) {
       return { error: "Product not found" };
     }
 
-    return { product };
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+    };
+
+    return { product: serializedProduct };
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return { error: "Failed to fetch product" };

@@ -17,8 +17,8 @@ export default async function EditProductPage({ params }: PageProps) {
     notFound();
   }
 
-  // Convert Decimal price to string to avoid serialization issues
-  const serializedProduct = {
+  // Convert price to string for the form input
+  const productForForm = {
     ...product,
     price: product.price.toString(),
   };
@@ -32,7 +32,7 @@ export default async function EditProductPage({ params }: PageProps) {
         </Button>
       </div>
 
-      <ProductForm productData={serializedProduct} isEditing={true} />
+      <ProductForm productData={productForForm} isEditing={true} />
     </div>
   );
 }
