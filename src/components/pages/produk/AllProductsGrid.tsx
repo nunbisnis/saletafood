@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/data/products";
-import { ProductCard, ProductCardSkeleton } from "@/components/pages/product";
+import { ProductCard, ProductCardSkeleton } from "@/components";
 
 interface AllProductsGridProps {
   products: Product[];

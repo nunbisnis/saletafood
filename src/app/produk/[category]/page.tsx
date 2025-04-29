@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { ProductFilters } from "@/components/product/product-filters";
+import { ProductFilters } from "@/components/layout/product-filters";
 import { getProductsByCategory } from "@/data/products";
 import { categories } from "@/data/categories";
 import {

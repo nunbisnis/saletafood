@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ProductSearch } from "@/components/product/product-search";
+import { ProductSearch } from "@/components/layout/product-search";
 
 export function ProductHero() {
   return (

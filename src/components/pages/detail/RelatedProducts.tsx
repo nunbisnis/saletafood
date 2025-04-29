@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Product } from "@/data/products";
-import { ProductCard } from "./ProductCard";
+import { ProductCard } from "../../ProductCard";
 
 interface RelatedProductsProps {
   product: Product;
   relatedProducts: Product[];
 }
 
-export function RelatedProducts({ product, relatedProducts }: RelatedProductsProps) {
+export function RelatedProducts({
+  product,
+  relatedProducts,
+}: RelatedProductsProps) {
   if (relatedProducts.length === 0) {
     return null;
   }

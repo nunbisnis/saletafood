@@ -7,7 +7,7 @@ import {
   ProductInfo,
   ProductTabs,
   RelatedProducts,
-} from "@/components/pages/product";
+} from "@/components";
 
 export async function generateMetadata({
   params,
