@@ -9,10 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
-import { Product } from "@/data/products";
 
 interface ProductCardProps {
-  product: Product;
+  product: any;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -26,12 +25,12 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          {product.status === "Stok Menipis" && (
+          {product.status === "LOW_STOCK" && (
             <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
               Stok Menipis
             </div>
           )}
-          {product.status === "Habis" && (
+          {product.status === "OUT_OF_STOCK" && (
             <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               Habis
             </div>
@@ -52,12 +51,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
       <CardFooter className="flex justify-between pt-0">
         <span className="text-lg font-bold text-primary">
-          Rp{product.price.toFixed(3)}
+          Rp{parseFloat(product.price.toString()).toLocaleString("id-ID")}
         </span>
         <Button
           size="sm"
           className="gap-1"
-          disabled={product.status === "Habis"}
+          disabled={product.status === "OUT_OF_STOCK"}
         >
           <ShoppingCart className="h-4 w-4" />
           <span className="hidden sm:inline">Keranjang</span>

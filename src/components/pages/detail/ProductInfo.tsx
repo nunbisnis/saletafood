@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Product } from "@/data/products";
 import { Star, ShoppingCart, Heart, Share2 } from "lucide-react";
+import { Product } from "@/types/product";
 
 interface ProductInfoProps {
   product: Product;
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
+  // Default rating value for consistency
+  const defaultRating = 0;
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
@@ -17,7 +20,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <Star
               key={i}
               className={`h-5 w-5 ${
-                i < Math.floor(product.rating || 0)
+                i < Math.floor(product.rating || defaultRating)
                   ? "text-yellow-500 fill-yellow-500"
                   : "text-gray-300"
               }`}
@@ -25,7 +28,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           ))}
         </div>
         <span className="text-sm text-muted-foreground ml-2">
-          ({product.reviews} ulasan)
+          ({product.reviews || 0} ulasan)
         </span>
       </div>
 
@@ -33,11 +36,21 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       <div className="flex items-center mb-8">
         <span className="text-3xl font-bold text-primary mr-4">
-          Rp{product.price.toFixed(3)}
+          Rp{product.price.toLocaleString("id-ID")}
         </span>
-        {product.status === "Tersedia" && (
+        {product.status === "AVAILABLE" && (
           <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
             Tersedia
+          </span>
+        )}
+        {product.status === "LOW_STOCK" && (
+          <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+            Stok Menipis
+          </span>
+        )}
+        {product.status === "OUT_OF_STOCK" && (
+          <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+            Habis
           </span>
         )}
       </div>
@@ -45,9 +58,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
       {/* Tags */}
       {product.tags && product.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
-          {product.tags.map((tag) => (
+          {product.tags.map((tag, index) => (
             <span
-              key={tag}
+              key={`${tag}-${index}`}
               className="bg-muted text-muted-foreground text-xs px-3 py-1 rounded-full"
             >
               {tag}
@@ -61,7 +74,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <Button
           className="gap-2"
           size="lg"
-          disabled={product.status === "Habis"}
+          disabled={product.status === "OUT_OF_STOCK"}
         >
           <ShoppingCart className="h-5 w-5" />
           Tambah ke Keranjang

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { categories } from "@/data/categories";
-import { getProductsByCategory, products } from "@/data/products";
+import { getProducts } from "@/actions/product-actions";
 import {
   ProductBreadcrumb,
   ProductHero,
@@ -16,13 +16,21 @@ export const metadata: Metadata = {
     "Jelajahi produk lengkap kami dengan berbagai pilihan makanan dan minuman lezat",
 };
 
-export default function ProdukPage() {
-  // Update category counts from actual product data
+export default async function ProdukPage() {
+  // Fetch products from the database
+  const { products: dbProducts } = await getProducts();
+
+  // Map database categories to the format expected by the components
   const categoriesWithCounts = categories.map((category) => {
-    const count = getProductsByCategory(category.name).length;
+    // Count products in this category
+    const count =
+      dbProducts?.filter(
+        (p) => p.category.name.toLowerCase() === category.name.toLowerCase()
+      ).length || 0;
+
     return {
       ...category,
-      count: count || 0,
+      count: count,
     };
   });
 
@@ -30,7 +38,7 @@ export default function ProdukPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ProductBreadcrumb />
       <ProductHero />
-      <AllProductsGrid products={products} />
+      <AllProductsGrid products={dbProducts || []} />
       <FeaturedCategories />
       <PromoBanner />
       <QuickLinks categories={categoriesWithCounts} />

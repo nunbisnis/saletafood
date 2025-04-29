@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Product } from "@/data/products";
 
 interface ProductBreadcrumbProps {
-  product: Product;
+  product: any;
 }
 
 export function ProductBreadcrumb({ product }: ProductBreadcrumbProps) {
@@ -26,10 +25,10 @@ export function ProductBreadcrumb({ product }: ProductBreadcrumbProps) {
         <li className="text-muted-foreground">/</li>
         <li>
           <Link
-            href={`/produk/${product.category.toLowerCase()}`}
+            href={`/produk/${product.category.slug}`}
             className="text-muted-foreground hover:text-primary"
           >
-            {product.category}
+            {product.category.name}
           </Link>
         </li>
         <li className="text-muted-foreground">/</li>

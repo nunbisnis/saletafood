@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Product } from "@/data/products";
 import { ProductCard } from "../../ProductCard";
 
 interface RelatedProductsProps {
-  product: Product;
-  relatedProducts: Product[];
+  product: any;
+  relatedProducts: any[];
 }
 
 export function RelatedProducts({
@@ -21,7 +20,7 @@ export function RelatedProducts({
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold">Produk Terkait</h2>
         <Link
-          href={`/produk/${product.category.toLowerCase()}`}
+          href={`/produk/${product.category.slug}`}
           className="text-primary font-medium flex items-center hover:underline"
         >
           Lihat Semua

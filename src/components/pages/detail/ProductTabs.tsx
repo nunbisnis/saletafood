@@ -1,12 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Product } from "@/data/products";
 import { Star } from "lucide-react";
+import { Product } from "@/types/product";
 
 interface ProductTabsProps {
   product: Product;
 }
 
 export function ProductTabs({ product }: ProductTabsProps) {
+  // Default rating value for consistency
+  const defaultRating = 0;
+
   return (
     <Tabs defaultValue="ingredients" className="mb-16">
       <TabsList className="mb-6">
@@ -16,12 +19,16 @@ export function ProductTabs({ product }: ProductTabsProps) {
 
       <TabsContent value="ingredients" className="p-6 bg-muted/30 rounded-lg">
         <h3 className="text-xl font-bold mb-4">Bahan-bahan</h3>
-        {product.ingredients && (
+        {product.ingredients && product.ingredients.length > 0 ? (
           <ul className="list-disc pl-5 space-y-2">
-            {product.ingredients.map((ingredient) => (
-              <li key={ingredient}>{ingredient}</li>
+            {product.ingredients.map((ingredient, index) => (
+              <li key={`${ingredient}-${index}`}>{ingredient}</li>
             ))}
           </ul>
+        ) : (
+          <p className="text-muted-foreground">
+            Tidak ada informasi bahan yang tersedia untuk produk ini.
+          </p>
         )}
       </TabsContent>
 
@@ -33,7 +40,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
               <Star
                 key={i}
                 className={`h-6 w-6 ${
-                  i < Math.floor(product.rating || 0)
+                  i < Math.floor(product.rating || defaultRating)
                     ? "text-yellow-500 fill-yellow-500"
                     : "text-gray-300"
                 }`}
@@ -41,10 +48,10 @@ export function ProductTabs({ product }: ProductTabsProps) {
             ))}
           </div>
           <span className="text-lg font-medium ml-2">
-            {product.rating} dari 5
+            {product.rating || defaultRating} dari 5
           </span>
           <span className="text-muted-foreground ml-2">
-            ({product.reviews} ulasan)
+            ({product.reviews || 0} ulasan)
           </span>
         </div>
         <p className="text-muted-foreground">

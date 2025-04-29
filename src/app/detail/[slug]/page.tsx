@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getProductBySlug, getRelatedProducts } from "@/data/products";
+import {
+  getProductBySlug,
+  getProductsByCategory,
+} from "@/actions/product-actions";
 import {
   ProductBreadcrumb,
   ProductImageGallery,
@@ -15,9 +18,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { product, error } = await getProductBySlug(slug);
 
-  if (!product) {
+  if (error || !product) {
     return {
       title: "Produk Tidak Ditemukan - SaletaFood",
     };
@@ -35,27 +38,50 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { product, error } = await getProductBySlug(slug);
 
-  if (!product) {
+  if (error || !product) {
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(product, 4);
+  // Get related products from the same category
+  const { products: categoryProducts } = await getProductsByCategory(
+    product.category.slug,
+    5
+  );
+
+  // Filter out the current product and limit to 4 items
+  const relatedProducts = categoryProducts
+    ? categoryProducts.filter((p) => p.id !== product.id).slice(0, 4)
+    : [];
+
+  // Convert Decimal price to string to avoid serialization issues
+  const serializedProduct = {
+    ...product,
+    price: parseFloat(product.price.toString()),
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <ProductBreadcrumb product={product} />
+      <ProductBreadcrumb product={serializedProduct} />
 
       {/* Product Detail */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-        <ProductImageGallery product={product} />
-        <ProductInfo product={product} />
+        <ProductImageGallery product={serializedProduct} />
+        <ProductInfo product={serializedProduct} />
       </div>
 
-      <ProductTabs product={product} />
+      <ProductTabs product={serializedProduct} />
 
-      <RelatedProducts product={product} relatedProducts={relatedProducts} />
+      {relatedProducts.length > 0 && (
+        <RelatedProducts
+          product={serializedProduct}
+          relatedProducts={relatedProducts.map((p) => ({
+            ...p,
+            price: parseFloat(p.price.toString()),
+          }))}
+        />
+      )}
     </div>
   );
 }

@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/data/products";
 import { ProductCard, ProductCardSkeleton } from "@/components";
 
 interface AllProductsGridProps {
-  products: Product[];
+  products: any[];
   initialLimit?: number;
   incrementAmount?: number;
 }
@@ -34,7 +33,7 @@ export function AllProductsGrid({
 
   return (
     <div className="mb-16">
-      <h2 className="text-2xl font-bold mb-8">Kategori Produk</h2>
+      <h2 className="text-2xl font-bold mb-8">Semua Produk</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
         {/* Display loaded products */}
