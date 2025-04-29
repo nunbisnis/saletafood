@@ -3641,6 +3641,7 @@ export namespace Prisma {
     description: number
     price: number
     image: number
+    images: number
     status: number
     featured: number
     rating: number
@@ -3705,6 +3706,7 @@ export namespace Prisma {
     description?: true
     price?: true
     image?: true
+    images?: true
     status?: true
     featured?: true
     rating?: true
@@ -3810,6 +3812,7 @@ export namespace Prisma {
     description: string
     price: Decimal
     image: string
+    images: string[]
     status: $Enums.ProductStatus
     featured: boolean
     rating: number | null
@@ -3847,6 +3850,7 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     image?: boolean
+    images?: boolean
     status?: boolean
     featured?: boolean
     rating?: boolean
@@ -3868,6 +3872,7 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     image?: boolean
+    images?: boolean
     status?: boolean
     featured?: boolean
     rating?: boolean
@@ -3887,6 +3892,7 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     image?: boolean
+    images?: boolean
     status?: boolean
     featured?: boolean
     rating?: boolean
@@ -3906,6 +3912,7 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     image?: boolean
+    images?: boolean
     status?: boolean
     featured?: boolean
     rating?: boolean
@@ -3918,7 +3925,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "image" | "status" | "featured" | "rating" | "reviews" | "slug" | "categoryId" | "ingredients" | "tags" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "image" | "images" | "status" | "featured" | "rating" | "reviews" | "slug" | "categoryId" | "ingredients" | "tags" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -3943,6 +3950,7 @@ export namespace Prisma {
       description: string
       price: Prisma.Decimal
       image: string
+      images: string[]
       status: $Enums.ProductStatus
       featured: boolean
       rating: number | null
@@ -4383,6 +4391,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Product", 'String'>
     readonly price: FieldRef<"Product", 'Decimal'>
     readonly image: FieldRef<"Product", 'String'>
+    readonly images: FieldRef<"Product", 'String[]'>
     readonly status: FieldRef<"Product", 'ProductStatus'>
     readonly featured: FieldRef<"Product", 'Boolean'>
     readonly rating: FieldRef<"Product", 'Float'>
@@ -7141,6 +7150,7 @@ export namespace Prisma {
     description: 'description',
     price: 'price',
     image: 'image',
+    images: 'images',
     status: 'status',
     featured: 'featured',
     rating: 'rating',
@@ -7466,6 +7476,7 @@ export namespace Prisma {
     description?: StringFilter<"Product"> | string
     price?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     featured?: BoolFilter<"Product"> | boolean
     rating?: FloatNullableFilter<"Product"> | number | null
@@ -7486,6 +7497,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     status?: SortOrder
     featured?: SortOrder
     rating?: SortOrderInput | SortOrder
@@ -7510,6 +7522,7 @@ export namespace Prisma {
     description?: StringFilter<"Product"> | string
     price?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     featured?: BoolFilter<"Product"> | boolean
     rating?: FloatNullableFilter<"Product"> | number | null
@@ -7529,6 +7542,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     status?: SortOrder
     featured?: SortOrder
     rating?: SortOrderInput | SortOrder
@@ -7555,6 +7569,7 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"Product"> | string
     price?: DecimalWithAggregatesFilter<"Product"> | Decimal | DecimalJsLike | number | string
     image?: StringWithAggregatesFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     status?: EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
     featured?: BoolWithAggregatesFilter<"Product"> | boolean
     rating?: FloatNullableWithAggregatesFilter<"Product"> | number | null
@@ -7849,6 +7864,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -7868,6 +7884,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -7887,6 +7904,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -7906,6 +7924,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -7925,6 +7944,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -7943,6 +7963,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -7960,6 +7981,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -8307,6 +8329,14 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type EnumProductStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
@@ -8341,14 +8371,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
   export type CategoryScalarRelationFilter = {
     is?: CategoryWhereInput
     isNot?: CategoryWhereInput
@@ -8370,6 +8392,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     status?: SortOrder
     featured?: SortOrder
     rating?: SortOrder
@@ -8726,6 +8749,10 @@ export namespace Prisma {
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
   }
 
+  export type ProductCreateimagesInput = {
+    set: string[]
+  }
+
   export type ProductCreateingredientsInput = {
     set: string[]
   }
@@ -8760,6 +8787,11 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type ProductUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type EnumProductStatusFieldUpdateOperationsInput = {
@@ -9260,6 +9292,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -9278,6 +9311,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -9325,6 +9359,7 @@ export namespace Prisma {
     description?: StringFilter<"Product"> | string
     price?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     status?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     featured?: BoolFilter<"Product"> | boolean
     rating?: FloatNullableFilter<"Product"> | number | null
@@ -9575,6 +9610,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -9593,6 +9629,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -9656,6 +9693,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -9674,6 +9712,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -9726,6 +9765,7 @@ export namespace Prisma {
     description: string
     price: Decimal | DecimalJsLike | number | string
     image: string
+    images?: ProductCreateimagesInput | string[]
     status?: $Enums.ProductStatus
     featured?: boolean
     rating?: number | null
@@ -9743,6 +9783,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -9761,6 +9802,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -9779,6 +9821,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     featured?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null

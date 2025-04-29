@@ -21,12 +21,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { CategoryForm } from "@/components/pages/admin/CategoryForm";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { MultipleImageUpload } from "@/components/ui/multiple-image-upload";
 
 type ProductFormData = {
   name: string;
   description: string;
   price: string;
   image: string;
+  images: string[];
   status: "AVAILABLE" | "OUT_OF_STOCK" | "LOW_STOCK";
   categoryId: string;
   ingredients: string[];
@@ -55,6 +57,7 @@ export function ProductForm() {
     description: "",
     price: "",
     image: "",
+    images: [],
     status: "AVAILABLE",
     categoryId: "",
     ingredients: [],
@@ -166,6 +169,7 @@ export function ProductForm() {
           description: "",
           price: "",
           image: "",
+          images: [],
           status: "AVAILABLE",
           categoryId: "",
           ingredients: [],
@@ -306,27 +310,48 @@ export function ProductForm() {
 
           <div className="space-y-2">
             <Label htmlFor="image">Gambar Produk</Label>
-            <ImageUpload
-              onImageUploaded={(url) => {
-                setFormData({
-                  ...formData,
-                  image: url,
-                });
-                // Clear validation error when image is uploaded
-                if (validationErrors.image) {
-                  setValidationErrors({
-                    ...validationErrors,
-                    image: "",
-                  });
-                }
-              }}
-              defaultImage={formData.image || ""}
-            />
-            {validationErrors.image && (
-              <p className="text-red-500 text-xs mt-1">
-                {validationErrors.image}
-              </p>
-            )}
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-500 mb-2">Gambar Utama</p>
+                <ImageUpload
+                  onImageUploaded={(url) => {
+                    setFormData({
+                      ...formData,
+                      image: url,
+                    });
+                    // Clear validation error when image is uploaded
+                    if (validationErrors.image) {
+                      setValidationErrors({
+                        ...validationErrors,
+                        image: "",
+                      });
+                    }
+                  }}
+                  defaultImage={formData.image || ""}
+                />
+                {validationErrors.image && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {validationErrors.image}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500 mb-2">
+                  Gambar Tambahan (Opsional)
+                </p>
+                <MultipleImageUpload
+                  onImagesUploaded={(urls) => {
+                    setFormData({
+                      ...formData,
+                      images: urls,
+                    });
+                  }}
+                  defaultImages={formData.images || []}
+                  maxImages={4}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

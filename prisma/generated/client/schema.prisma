@@ -46,7 +46,8 @@ model Product {
   name        String
   description String
   price       Decimal       @db.Decimal(10, 2)
-  image       String
+  image       String // Main image (keeping for backward compatibility)
+  images      String[] // Array of image URLs
   status      ProductStatus @default(AVAILABLE)
   featured    Boolean       @default(false)
   rating      Float?
