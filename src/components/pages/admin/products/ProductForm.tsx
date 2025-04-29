@@ -19,7 +19,7 @@ import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { CategoryForm } from "@/components/pages/admin/CategoryForm";
+import { CategoryForm } from "@/components/pages/admin/categories/CategoryForm";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { MultipleImageUpload } from "@/components/ui/multiple-image-upload";
 

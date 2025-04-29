@@ -39,9 +39,14 @@ interface CategoryTableProps {
   onCategoryDeleted: () => void;
 }
 
-export function CategoryTable({ categories, onCategoryDeleted }: CategoryTableProps) {
+export function CategoryTable({
+  categories,
+  onCategoryDeleted,
+}: CategoryTableProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleDeleteClick = (category: Category) => {
@@ -51,13 +56,13 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
 
   const handleDeleteConfirm = async () => {
     if (!categoryToDelete) return;
-    
+
     setIsDeleting(true);
     setDeleteError(null);
-    
+
     try {
       const result = await deleteCategory(categoryToDelete.id);
-      
+
       if (result.success) {
         toast({
           title: "Kategori berhasil dihapus",
@@ -107,17 +112,21 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
                     {category.name}
                   </td>
                   <td className="px-4 py-3 text-sm">{category.slug}</td>
-                  <td className="px-4 py-3 text-sm">{category.productCount || 0}</td>
+                  <td className="px-4 py-3 text-sm">
+                    {category.productCount || 0}
+                  </td>
                   <td className="px-4 py-3 text-sm">
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/dashboard/categories/${category.id}`}>
+                        <Link
+                          href={`/admin/dashboard/categories/edit?id=${category.id}`}
+                        >
                           <Edit className="h-4 w-4 mr-1" />
                           Edit
                         </Link>
                       </Button>
-                      <Button 
-                        variant="destructive" 
+                      <Button
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteClick(category)}
                       >
@@ -152,12 +161,14 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href={`/admin/dashboard/categories/${category.id}`}>
+                    <Link
+                      href={`/admin/dashboard/categories/edit?id=${category.id}`}
+                    >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="text-red-600"
                     onClick={() => handleDeleteClick(category)}
                   >
@@ -181,14 +192,16 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
 
             <div className="mt-4 flex space-x-2">
               <Button variant="outline" size="sm" className="flex-1" asChild>
-                <Link href={`/admin/dashboard/categories/${category.id}`}>
+                <Link
+                  href={`/admin/dashboard/categories/edit?id=${category.id}`}
+                >
                   <Edit className="h-4 w-4 mr-1" />
                   Edit
                 </Link>
               </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
+              <Button
+                variant="destructive"
+                size="sm"
                 className="flex-1"
                 onClick={() => handleDeleteClick(category)}
               >
@@ -201,21 +214,25 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
+      <AlertDialog
+        open={!!categoryToDelete}
+        onOpenChange={(open) => !open && setCategoryToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Konfirmasi Hapus Kategori</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus kategori "{categoryToDelete?.name}"?
-              {categoryToDelete?.productCount && categoryToDelete.productCount > 0 ? (
+              Apakah Anda yakin ingin menghapus kategori "
+              {categoryToDelete?.name}"?
+              {categoryToDelete?.productCount &&
+              categoryToDelete.productCount > 0 ? (
                 <div className="mt-2 text-red-500 flex items-center">
                   <AlertCircle className="h-4 w-4 mr-2" />
-                  Kategori ini memiliki {categoryToDelete.productCount} produk. Anda perlu memindahkan atau menghapus produk terlebih dahulu.
+                  Kategori ini memiliki {categoryToDelete.productCount} produk.
+                  Anda perlu memindahkan atau menghapus produk terlebih dahulu.
                 </div>
               ) : (
-                <div className="mt-2">
-                  Tindakan ini tidak dapat dibatalkan.
-                </div>
+                <div className="mt-2">Tindakan ini tidak dapat dibatalkan.</div>
               )}
               {deleteError && (
                 <div className="mt-2 text-red-500 flex items-center">
@@ -232,7 +249,11 @@ export function CategoryTable({ categories, onCategoryDeleted }: CategoryTablePr
                 e.preventDefault();
                 handleDeleteConfirm();
               }}
-              disabled={isDeleting || (categoryToDelete?.productCount && categoryToDelete.productCount > 0)}
+              disabled={
+                isDeleting ||
+                (categoryToDelete?.productCount &&
+                  categoryToDelete.productCount > 0)
+              }
               className="bg-red-500 hover:bg-red-600"
             >
               {isDeleting ? "Menghapus..." : "Hapus"}
