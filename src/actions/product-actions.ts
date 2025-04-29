@@ -17,7 +17,15 @@ export async function getProducts(limit?: number) {
       },
     });
 
-    return { products };
+    // Convert Decimal to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    }));
+
+    return { products: serializedProducts };
   } catch (error) {
     console.error("Failed to fetch products:", error);
     return { error: "Failed to fetch products" };
@@ -44,7 +52,15 @@ export async function getProductsByCategory(
       },
     });
 
-    return { products };
+    // Convert Decimal to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    }));
+
+    return { products: serializedProducts };
   } catch (error) {
     console.error("Failed to fetch products by category:", error);
     return { error: "Failed to fetch products by category" };
@@ -66,7 +82,45 @@ export async function getProductBySlug(slug: string) {
       return { error: "Product not found" };
     }
 
-    return { product };
+    // Convert Decimal to number to avoid serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    };
+
+    return { product: serializedProduct };
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+    return { error: "Failed to fetch product" };
+  }
+}
+
+export async function getProductById(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        category: true,
+      },
+    });
+
+    if (!product) {
+      return { error: "Product not found" };
+    }
+
+    // Convert Decimal to number to avoid serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    };
+
+    return { product: serializedProduct };
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return { error: "Failed to fetch product" };
@@ -185,9 +239,15 @@ export async function deleteProduct(id: string) {
       };
     }
 
+    // Delete the product from the database
     await prisma.product.delete({
       where: { id },
     });
+
+    // Note: Vercel Blob doesn't have a direct delete method in the client-side SDK
+    // If you need to delete the image, you would need to implement a separate API route
+    // that uses the Vercel Blob Admin SDK to delete the image
+    // For now, we'll just revalidate the paths
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/produk");
@@ -214,7 +274,15 @@ export async function getFeaturedProducts(limit?: number) {
       },
     });
 
-    return { products };
+    // Convert Decimal to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    }));
+
+    return { products: serializedProducts };
   } catch (error) {
     console.error("Failed to fetch featured products:", error);
     return { error: "Failed to fetch featured products" };

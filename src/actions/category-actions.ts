@@ -53,6 +53,37 @@ export async function getCategoryBySlug(slug: string) {
   }
 }
 
+export async function getCategoryById(id: string) {
+  try {
+    const category = await prisma.category.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
+    });
+
+    if (!category) {
+      return { error: "Category not found" };
+    }
+
+    // Map the category to include the product count
+    const categoryWithCount = {
+      ...category,
+      productCount: category._count.products,
+      _count: undefined,
+    };
+
+    return { category: categoryWithCount };
+  } catch (error) {
+    console.error("Failed to fetch category:", error);
+    return { error: "Failed to fetch category" };
+  }
+}
+
 export async function createCategory(formData: CategoryFormData) {
   // Validate input data
   const validationResult = categorySchema.safeParse(formData);
