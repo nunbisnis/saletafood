@@ -1,9 +1,11 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { DashboardStats, ProductsTable } from "@/components/pages/admin";
-import { PlusCircle, RefreshCcw } from "lucide-react";
+import {
+  DashboardStats,
+  ProductsTable,
+  DashboardActions,
+} from "@/components/pages/admin";
+import { Button } from "@/components/ui/button";
 import { getProducts } from "@/actions/product-actions";
 
 // Function to map database product status to UI status
@@ -55,18 +57,7 @@ export default async function AdminDashboardPage() {
             Selamat datang, {user?.firstName || "Admin"}!
           </p>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
-            <RefreshCcw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-          <Button asChild size="sm" className="flex-1 sm:flex-none">
-            <Link href="/admin/dashboard/products/new">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Tambah Produk
-            </Link>
-          </Button>
-        </div>
+        <DashboardActions />
       </div>
 
       {/* Stats Cards */}

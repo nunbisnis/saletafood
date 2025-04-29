@@ -19,13 +19,7 @@ import { editProduct } from "@/actions/edit-product-action";
 import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  AlertCircle,
-  CheckCircle2,
-  Upload,
-  X,
-  Image as ImageIcon,
-} from "lucide-react";
+import { AlertCircle, CheckCircle2, X, Image as ImageIcon } from "lucide-react";
 import { uploadFile, validateImageFile } from "@/lib/upload-utils";
 
 type ProductFormData = {
@@ -346,11 +340,13 @@ export function ProductForm({
           setFormSuccess("Produk berhasil diperbarui!");
 
           // Redirect to dashboard after 2 seconds
+          // Keep isSubmitting true until redirect happens
           setTimeout(() => {
             router.push("/admin/dashboard");
           }, 2000);
         } else {
           setFormError(result.error || "Gagal memperbarui produk");
+          setIsSubmitting(false); // Only set to false on error
         }
       } else {
         result = await createProduct(productFormData);
@@ -369,11 +365,13 @@ export function ProductForm({
           });
 
           // Redirect to dashboard after 2 seconds
+          // Keep isSubmitting true until redirect happens
           setTimeout(() => {
             router.push("/admin/dashboard");
           }, 2000);
         } else {
           setFormError(result.error || "Gagal menambahkan produk");
+          setIsSubmitting(false); // Only set to false on error
         }
       }
     } catch (error) {
@@ -383,8 +381,7 @@ export function ProductForm({
           isEditing ? "memperbarui" : "menambahkan"
         } produk`
       );
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Only set to false on error
     }
   };
 
