@@ -1,13 +1,21 @@
+"use client";
+
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { EditCategoryPageComponent } from "@/components/pages/admin";
 import { Toaster } from "@/components/ui/toaster";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function EditCategoryPage() {
+// Component that uses useSearchParams
+function EditCategoryContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
+  return <EditCategoryPageComponent id={id} />;
+}
+
+export default function EditCategoryPage() {
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between mb-8">
@@ -19,7 +27,18 @@ export default function EditCategoryPage() {
         </Button>
       </div>
 
-      <EditCategoryPageComponent id={id} />
+      <Suspense
+        fallback={
+          <div className="w-full flex flex-col justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">
+              Memuat data kategori...
+            </p>
+          </div>
+        }
+      >
+        <EditCategoryContent />
+      </Suspense>
       <Toaster />
     </div>
   );
