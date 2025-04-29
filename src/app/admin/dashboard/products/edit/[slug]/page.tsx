@@ -4,21 +4,24 @@ import { ProductForm } from "@/components/pages/admin";
 import { getProductBySlug } from "@/actions/product-actions";
 import { notFound } from "next/navigation";
 
-interface EditProductPageProps {
-  params: {
-    slug: string;
-  };
+interface PageProps {
+  params: Promise<{ slug: string }>;
 }
 
-export default async function EditProductPage({
-  params,
-}: EditProductPageProps) {
-  const { slug } = params;
+export default async function EditProductPage({ params }: PageProps) {
+  // Await the params object to get the slug
+  const { slug } = await params;
   const { product, error } = await getProductBySlug(slug);
 
   if (error || !product) {
     notFound();
   }
+
+  // Convert Decimal price to string to avoid serialization issues
+  const serializedProduct = {
+    ...product,
+    price: product.price.toString(),
+  };
 
   return (
     <div className="container py-10">
@@ -29,7 +32,7 @@ export default async function EditProductPage({
         </Button>
       </div>
 
-      <ProductForm productData={product} isEditing={true} />
+      <ProductForm productData={serializedProduct} isEditing={true} />
     </div>
   );
 }
