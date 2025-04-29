@@ -198,3 +198,25 @@ export async function deleteProduct(id: string) {
     return { success: false, error: "Failed to delete product" };
   }
 }
+
+export async function getFeaturedProducts(limit?: number) {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        featured: true,
+      },
+      take: limit || 4,
+      include: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return { products };
+  } catch (error) {
+    console.error("Failed to fetch featured products:", error);
+    return { error: "Failed to fetch featured products" };
+  }
+}

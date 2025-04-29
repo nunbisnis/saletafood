@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -47,6 +48,7 @@ model Product {
   price       Decimal       @db.Decimal(10, 2)
   image       String
   status      ProductStatus @default(AVAILABLE)
+  featured    Boolean       @default(false)
   rating      Float?
   reviews     Int?
   slug        String        @unique

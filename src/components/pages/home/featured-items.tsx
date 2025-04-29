@@ -9,10 +9,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Star, ShoppingCart, ChevronRight } from "lucide-react";
-import { getFeaturedProducts } from "@/data/products";
+import { getFeaturedProducts } from "@/actions/product-actions";
 
-export function FeaturedItems() {
-  const featuredItems = getFeaturedProducts();
+// Helper function to map database status to UI status
+function mapProductStatus(status: string): string {
+  switch (status) {
+    case "AVAILABLE":
+      return "Tersedia";
+    case "LOW_STOCK":
+      return "Stok Menipis";
+    case "OUT_OF_STOCK":
+      return "Habis";
+    default:
+      return "Tersedia";
+  }
+}
+
+export async function FeaturedItems() {
+  const { products } = await getFeaturedProducts(4);
+
+  // Handle error or no products
+  const featuredItems = products || [];
 
   return (
     <section className="py-16 bg-background">
@@ -39,7 +56,7 @@ export function FeaturedItems() {
               key={item.id}
               className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40"
             >
-              <Link href={`/detail/${item.slug}`} className="block">
+              <Link href={`/produk/${item.slug}`} className="block">
                 <div className="relative h-48 w-full overflow-hidden">
                   <Image
                     src={item.image}
@@ -47,12 +64,12 @@ export function FeaturedItems() {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {item.status === "Stok Menipis" && (
+                  {item.status === "LOW_STOCK" && (
                     <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
                       Stok Menipis
                     </div>
                   )}
-                  {item.status === "Habis" && (
+                  {item.status === "OUT_OF_STOCK" && (
                     <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                       Habis
                     </div>
@@ -61,7 +78,7 @@ export function FeaturedItems() {
               </Link>
 
               <CardHeader className="pb-2">
-                <Link href={`/detail/${item.slug}`} className="block">
+                <Link href={`/produk/${item.slug}`} className="block">
                   <CardTitle className="text-lg hover:text-primary transition-colors">
                     {item.name}
                   </CardTitle>
@@ -90,7 +107,7 @@ export function FeaturedItems() {
 
               <CardFooter className="flex justify-between pt-0">
                 <span className="text-lg font-bold text-primary">
-                  Rp{item.price.toFixed(3)}
+                  Rp{parseFloat(item.price.toString()).toFixed(3)}
                 </span>
                 <Button size="sm" className="gap-1">
                   <ShoppingCart className="h-4 w-4" />

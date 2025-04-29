@@ -19,6 +19,8 @@ import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { CategoryForm } from "@/components/pages/admin/CategoryForm";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 type ProductFormData = {
   name: string;
@@ -59,20 +61,21 @@ export function ProductForm() {
     tags: [],
   });
 
-  // Fetch categories on component mount
-  useEffect(() => {
-    async function fetchCategories() {
-      const result = await getCategories();
-      if ("categories" in result && result.categories) {
-        setCategories(
-          result.categories.map((cat) => ({
-            id: cat.id,
-            name: cat.name,
-            slug: cat.slug,
-          }))
-        );
-      }
+  // Fetch categories on component mount or when refreshed
+  const fetchCategories = async () => {
+    const result = await getCategories();
+    if ("categories" in result && result.categories) {
+      setCategories(
+        result.categories.map((cat) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+        }))
+      );
     }
+  };
+
+  useEffect(() => {
     fetchCategories();
   }, []);
 
@@ -255,7 +258,10 @@ export function ProductForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="categoryId">Kategori</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="categoryId">Kategori</Label>
+              <CategoryForm onSuccess={fetchCategories} />
+            </div>
             <select
               id="categoryId"
               name="categoryId"
@@ -299,25 +305,28 @@ export function ProductForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">URL Gambar Produk</Label>
-            <Input
-              id="image"
-              name="image"
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image || ""}
-              onChange={handleChange}
-              className={validationErrors.image ? "border-red-500" : ""}
+            <Label htmlFor="image">Gambar Produk</Label>
+            <ImageUpload
+              onImageUploaded={(url) => {
+                setFormData({
+                  ...formData,
+                  image: url,
+                });
+                // Clear validation error when image is uploaded
+                if (validationErrors.image) {
+                  setValidationErrors({
+                    ...validationErrors,
+                    image: "",
+                  });
+                }
+              }}
+              defaultImage={formData.image || ""}
             />
             {validationErrors.image && (
               <p className="text-red-500 text-xs mt-1">
                 {validationErrors.image}
               </p>
             )}
-            <p className="text-xs text-muted-foreground">
-              Masukkan URL gambar produk. Untuk sementara, gunakan URL gambar
-              dari internet.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
