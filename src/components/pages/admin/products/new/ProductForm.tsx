@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createProduct } from "@/actions/product-actions";
+import { editProduct } from "@/actions/edit-product-action";
 import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -38,7 +39,15 @@ type Category = {
   slug: string;
 };
 
-export function ProductForm() {
+type ProductFormProps = {
+  productData?: any;
+  isEditing?: boolean;
+};
+
+export function ProductForm({
+  productData,
+  isEditing = false,
+}: ProductFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,15 +57,33 @@ export function ProductForm() {
     Record<string, string>
   >({});
 
-  const [formData, setFormData] = useState<Partial<ProductFormData>>({
-    name: "",
-    description: "",
-    price: "",
-    image: "",
-    status: "AVAILABLE",
-    categoryId: "",
-    ingredients: [],
-    tags: [],
+  // Initialize form data with product data if editing
+  const [formData, setFormData] = useState<Partial<ProductFormData>>(() => {
+    if (isEditing && productData) {
+      return {
+        id: productData.id,
+        name: productData.name,
+        description: productData.description,
+        price: productData.price.toString(),
+        image: productData.image,
+        status: productData.status,
+        categoryId: productData.categoryId,
+        ingredients: productData.ingredients || [],
+        tags: productData.tags || [],
+        slug: productData.slug,
+      };
+    }
+
+    return {
+      name: "",
+      description: "",
+      price: "",
+      image: "",
+      status: "AVAILABLE",
+      categoryId: "",
+      ingredients: [],
+      tags: [],
+    };
   });
 
   // Fetch categories on component mount
@@ -125,7 +152,7 @@ export function ProductForm() {
 
     try {
       // Prepare the data for submission
-      const productData = {
+      const productFormData = {
         ...(formData as ProductFormData),
         price: parseFloat(formData.price || "0"),
         slug: formData.slug || generateSlug(formData.name || ""),
@@ -135,7 +162,7 @@ export function ProductForm() {
 
       // Validate the form data
       const validationResult = productFormSchema.safeParse({
-        ...productData,
+        ...productFormData,
         price: formData.price || "0", // Keep as string for validation
       });
 
@@ -152,33 +179,52 @@ export function ProductForm() {
         return;
       }
 
-      // Submit the form data
-      const result = await createProduct(productData);
+      let result;
 
-      if (result.success) {
-        setFormSuccess("Produk berhasil ditambahkan!");
-        // Reset form after successful submission
-        setFormData({
-          name: "",
-          description: "",
-          price: "",
-          image: "",
-          status: "AVAILABLE",
-          categoryId: "",
-          ingredients: [],
-          tags: [],
-        });
+      // Submit the form data based on whether we're editing or creating
+      if (isEditing && productData) {
+        result = await editProduct(productData.id, productFormData);
+        if (result.success) {
+          setFormSuccess("Produk berhasil diperbarui!");
 
-        // Redirect to dashboard after 2 seconds
-        setTimeout(() => {
-          router.push("/admin/dashboard");
-        }, 2000);
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            router.push("/admin/dashboard");
+          }, 2000);
+        } else {
+          setFormError(result.error || "Gagal memperbarui produk");
+        }
       } else {
-        setFormError(result.error || "Gagal menambahkan produk");
+        result = await createProduct(productFormData);
+        if (result.success) {
+          setFormSuccess("Produk berhasil ditambahkan!");
+          // Reset form after successful submission
+          setFormData({
+            name: "",
+            description: "",
+            price: "",
+            image: "",
+            status: "AVAILABLE",
+            categoryId: "",
+            ingredients: [],
+            tags: [],
+          });
+
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            router.push("/admin/dashboard");
+          }, 2000);
+        } else {
+          setFormError(result.error || "Gagal menambahkan produk");
+        }
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      setFormError("Terjadi kesalahan saat menambahkan produk");
+      setFormError(
+        `Terjadi kesalahan saat ${
+          isEditing ? "memperbarui" : "menambahkan"
+        } produk`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -190,7 +236,9 @@ export function ProductForm() {
         <CardHeader>
           <CardTitle>Informasi Produk</CardTitle>
           <CardDescription>
-            Masukkan detail produk baru yang ingin Anda tambahkan ke menu Anda.
+            {isEditing
+              ? "Edit informasi produk yang sudah ada."
+              : "Masukkan detail produk baru yang ingin Anda tambahkan ke menu Anda."}
           </CardDescription>
         </CardHeader>
 
@@ -355,7 +403,11 @@ export function ProductForm() {
             <Link href="/admin/dashboard">Batal</Link>
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan Produk"}
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEditing
+              ? "Perbarui Produk"
+              : "Simpan Produk"}
           </Button>
         </CardFooter>
       </form>

@@ -58,7 +58,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
                 <tr key={product.id} className="border-t hover:bg-muted/50">
                   <td className="px-4 py-3 text-sm font-medium">
                     <Link
-                      href={`/admin/dashboard/products/edit/${product.id}`}
+                      href={`/admin/dashboard/products/edit/${product.slug}`}
                       className="hover:underline text-primary"
                     >
                       {product.name}
@@ -76,7 +76,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm" asChild>
                         <Link
-                          href={`/admin/dashboard/products/edit/${product.id}`}
+                          href={`/admin/dashboard/products/edit/${product.slug}`}
                           className="flex items-center"
                         >
                           <Edit className="h-4 w-4 mr-1" />
@@ -108,7 +108,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
               <div>
                 <h3 className="font-medium">
                   <Link
-                    href={`/admin/dashboard/products/${product.id}`}
+                    href={`/admin/dashboard/products/edit/${product.slug}`}
                     className="hover:underline text-primary"
                   >
                     {product.name}
@@ -139,7 +139,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/admin/dashboard/products/edit/${product.id}`}
+                      href={`/admin/dashboard/products/edit/${product.slug}`}
                       className="flex items-center"
                     >
                       <Edit className="h-4 w-4 mr-2" />
@@ -158,10 +158,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
             <Button variant="outline" size="sm" className="w-full" asChild>
               <Link
-                href={`/admin/dashboard/products/${product.id}`}
+                href={`/admin/dashboard/products/edit/${product.slug}`}
                 className="flex items-center justify-center"
               >
-                <span>Detail</span>
+                <span>Edit</span>
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
