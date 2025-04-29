@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { productSchema, type ProductFormData } from "@/lib/zod";
 
 export async function getProducts(limit?: number) {
@@ -120,10 +119,16 @@ export async function createProduct(formData: ProductFormData) {
       },
     });
 
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+    };
+
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/produk");
 
-    return { success: true, product };
+    return { success: true, product: serializedProduct };
   } catch (error) {
     console.error("Failed to create product:", error);
     return { success: false, error: "Failed to create product" };

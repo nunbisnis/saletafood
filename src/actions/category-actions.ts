@@ -34,7 +34,16 @@ export async function getCategoryBySlug(slug: string) {
       return { error: "Category not found" };
     }
 
-    return { category };
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedCategory = {
+      ...category,
+      products: category.products.map((product) => ({
+        ...product,
+        price: parseFloat(product.price.toString()),
+      })),
+    };
+
+    return { category: serializedCategory };
   } catch (error) {
     console.error("Failed to fetch category:", error);
     return { error: "Failed to fetch category" };

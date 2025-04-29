@@ -36,11 +36,17 @@ export async function editProduct(id: string, formData: ProductFormData) {
       },
     });
 
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+    };
+
     revalidatePath("/admin/dashboard/products");
     revalidatePath(`/produk/${product.slug}`);
     revalidatePath("/produk");
 
-    return { success: true, product };
+    return { success: true, product: serializedProduct };
   } catch (error) {
     console.error("Failed to update product:", error);
     return { success: false, error: "Failed to update product" };
