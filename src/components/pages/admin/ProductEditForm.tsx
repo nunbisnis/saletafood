@@ -52,6 +52,9 @@ type ProductEditFormProps = {
 };
 
 export function ProductEditForm({ product }: ProductEditFormProps) {
+  console.log("ProductEditForm received product:", product);
+  console.log("ProductEditForm received product.images:", product.images);
+
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);

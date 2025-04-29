@@ -49,7 +49,16 @@ export default function EditProductPage() {
           setError("Produk tidak ditemukan");
         } else {
           console.log("Product found:", dbProduct);
-          setProduct(dbProduct);
+          console.log("Product images:", dbProduct.images);
+
+          // Ensure images is always an array
+          const productWithImages = {
+            ...dbProduct,
+            images: Array.isArray(dbProduct.images) ? dbProduct.images : [],
+          };
+
+          console.log("Product with fixed images:", productWithImages);
+          setProduct(productWithImages);
           setError(null);
         }
       } catch (err) {

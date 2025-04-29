@@ -17,17 +17,43 @@ export async function getProducts(limit?: number) {
     });
 
     // Convert Decimal to number to avoid serialization issues
-    const serializedProducts = products.map((product) => ({
-      ...product,
-      price: parseFloat(product.price.toString()),
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      // Ensure images field is included and is an array
-      // @ts-ignore - TypeScript doesn't recognize the images field yet
-      images: Array.isArray((product as any).images)
-        ? (product as any).images
-        : [],
-    }));
+    const serializedProducts = products.map((product) => {
+      const base = {
+        ...product,
+        price: parseFloat(product.price.toString()),
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+      };
+
+      // Get the raw images data from the database
+      const rawImages = (product as any).images;
+
+      // Parse the images field - it might be a string, an array, or undefined
+      let parsedImages: string[] = [];
+
+      if (rawImages) {
+        if (typeof rawImages === "string") {
+          // If it's a JSON string, parse it
+          try {
+            parsedImages = JSON.parse(rawImages);
+          } catch (e) {
+            // If it's a single URL string, wrap it in an array
+            if (rawImages.startsWith("http")) {
+              parsedImages = [rawImages];
+            }
+          }
+        } else if (Array.isArray(rawImages)) {
+          // If it's already an array, use it
+          parsedImages = [...rawImages];
+        }
+      }
+
+      // Return the product with parsed images
+      return {
+        ...base,
+        images: parsedImages,
+      };
+    });
 
     return { products: serializedProducts };
   } catch (error) {
@@ -57,17 +83,43 @@ export async function getProductsByCategory(
     });
 
     // Convert Decimal to number to avoid serialization issues
-    const serializedProducts = products.map((product) => ({
-      ...product,
-      price: parseFloat(product.price.toString()),
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      // Ensure images field is included and is an array
-      // @ts-ignore - TypeScript doesn't recognize the images field yet
-      images: Array.isArray((product as any).images)
-        ? (product as any).images
-        : [],
-    }));
+    const serializedProducts = products.map((product) => {
+      const base = {
+        ...product,
+        price: parseFloat(product.price.toString()),
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+      };
+
+      // Get the raw images data from the database
+      const rawImages = (product as any).images;
+
+      // Parse the images field - it might be a string, an array, or undefined
+      let parsedImages: string[] = [];
+
+      if (rawImages) {
+        if (typeof rawImages === "string") {
+          // If it's a JSON string, parse it
+          try {
+            parsedImages = JSON.parse(rawImages);
+          } catch (e) {
+            // If it's a single URL string, wrap it in an array
+            if (rawImages.startsWith("http")) {
+              parsedImages = [rawImages];
+            }
+          }
+        } else if (Array.isArray(rawImages)) {
+          // If it's already an array, use it
+          parsedImages = [...rawImages];
+        }
+      }
+
+      // Return the product with parsed images
+      return {
+        ...base,
+        images: parsedImages,
+      };
+    });
 
     return { products: serializedProducts };
   } catch (error) {
@@ -97,14 +149,43 @@ export async function getProductBySlug(slug: string) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
-      // Ensure images field is included and is an array
-      // @ts-ignore - TypeScript doesn't recognize the images field yet
-      images: Array.isArray((product as any).images)
-        ? (product as any).images
-        : [],
     };
 
-    return { product: serializedProduct };
+    // Get the raw images data from the database
+    const rawImages = (product as any).images;
+    console.log("Raw images from database (getProductBySlug):", rawImages);
+
+    // Parse the images field - it might be a string, an array, or undefined
+    let parsedImages: string[] = [];
+
+    if (rawImages) {
+      if (typeof rawImages === "string") {
+        // If it's a JSON string, parse it
+        try {
+          parsedImages = JSON.parse(rawImages);
+          console.log("Parsed images from JSON string:", parsedImages);
+        } catch (e) {
+          console.error("Error parsing images JSON:", e);
+          // If it's a single URL string, wrap it in an array
+          if (rawImages.startsWith("http")) {
+            parsedImages = [rawImages];
+            console.log("Treating raw images as a single URL:", parsedImages);
+          }
+        }
+      } else if (Array.isArray(rawImages)) {
+        // If it's already an array, use it
+        parsedImages = [...rawImages];
+        console.log("Raw images is already an array:", parsedImages);
+      }
+    }
+
+    // Explicitly add the images field to ensure it's properly included
+    const productWithImages = {
+      ...serializedProduct,
+      images: parsedImages,
+    };
+
+    return { product: productWithImages };
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return { error: "Failed to fetch product" };
@@ -138,14 +219,45 @@ export async function getProductById(id: string) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
-      // Ensure images field is included and is an array
-      // @ts-ignore - TypeScript doesn't recognize the images field yet
-      images: Array.isArray((product as any).images)
-        ? (product as any).images
-        : [],
     };
 
-    return { product: serializedProduct };
+    // Get the raw images data from the database
+    const rawImages = (product as any).images;
+    console.log("Raw images from database:", rawImages);
+
+    // Parse the images field - it might be a string, an array, or undefined
+    let parsedImages: string[] = [];
+
+    if (rawImages) {
+      if (typeof rawImages === "string") {
+        // If it's a JSON string, parse it
+        try {
+          parsedImages = JSON.parse(rawImages);
+          console.log("Parsed images from JSON string:", parsedImages);
+        } catch (e) {
+          console.error("Error parsing images JSON:", e);
+          // If it's a single URL string, wrap it in an array
+          if (rawImages.startsWith("http")) {
+            parsedImages = [rawImages];
+            console.log("Treating raw images as a single URL:", parsedImages);
+          }
+        }
+      } else if (Array.isArray(rawImages)) {
+        // If it's already an array, use it
+        parsedImages = [...rawImages];
+        console.log("Raw images is already an array:", parsedImages);
+      }
+    }
+
+    // Explicitly add the images field to ensure it's properly included
+    const productWithImages = {
+      ...serializedProduct,
+      images: parsedImages,
+    };
+
+    console.log("Final product with images:", productWithImages.images);
+
+    return { product: productWithImages };
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return { error: "Failed to fetch product" };
@@ -185,12 +297,22 @@ export async function createProduct(formData: ProductFormData) {
       data: createData,
     });
 
-    // If we need to update the images field, do it in a separate query
-    if (validData.images && validData.images.length > 0) {
-      console.log("Setting images field separately:", validData.images);
+    // Always update the images field, even if it's an empty array
+    console.log("Setting images field:", validData.images);
+
+    try {
+      // Convert the array to a JSON string for the SQL query
+      const imagesJson = JSON.stringify(validData.images || []);
+      console.log("Images JSON for SQL query:", imagesJson);
 
       // Use Prisma's raw query to update the images field
-      await prisma.$executeRaw`UPDATE products SET images = ${validData.images} WHERE id = ${product.id}`;
+      await prisma.$executeRawUnsafe(
+        `UPDATE products SET images = '${imagesJson}' WHERE id = '${product.id}'`
+      );
+
+      console.log("Images field updated successfully");
+    } catch (error) {
+      console.error("Error updating images field:", error);
     }
 
     revalidatePath("/admin/dashboard/products");
@@ -247,27 +369,96 @@ export async function updateProduct(id: string, formData: ProductFormData) {
       data: updateData,
     });
 
-    // If we need to update the images field, do it in a separate query
-    if (validData.images && validData.images.length > 0) {
-      console.log("Updating images field separately:", validData.images);
+    // Always update the images field, even if it's an empty array
+    console.log("Updating images field:", validData.images);
+
+    try {
+      // Convert the array to a JSON string for the SQL query
+      const imagesJson = JSON.stringify(validData.images || []);
+      console.log("Images JSON for SQL query:", imagesJson);
 
       // Use Prisma's raw query to update the images field
-      await prisma.$executeRaw`UPDATE products SET images = ${validData.images} WHERE id = ${id}`;
+      await prisma.$executeRawUnsafe(
+        `UPDATE products SET images = '${imagesJson}' WHERE id = '${id}'`
+      );
+
+      console.log("Images field updated successfully");
+    } catch (error) {
+      console.error("Error updating images field:", error);
     }
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath(`/produk/${product.slug}`);
     revalidatePath("/produk");
 
+    // Fetch the updated product to get the latest data including images
+    const updatedProduct = await prisma.product.findUnique({
+      where: { id },
+      include: { category: true },
+    });
+
+    if (!updatedProduct) {
+      return { success: false, error: "Failed to fetch updated product" };
+    }
+
+    console.log("Updated product from database:", updatedProduct);
+    console.log("Updated product images:", (updatedProduct as any).images);
+
     // Serialize the product object to avoid Decimal serialization issues
     const serializedProduct = {
-      ...product,
-      price: parseFloat(product.price.toString()),
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
+      ...updatedProduct,
+      price: parseFloat(updatedProduct.price.toString()),
+      createdAt: updatedProduct.createdAt.toISOString(),
+      updatedAt: updatedProduct.updatedAt.toISOString(),
     };
 
-    return { success: true, product: serializedProduct };
+    // Get the raw images data from the database
+    const rawImages = (updatedProduct as any).images;
+    console.log("Raw images from database (updateProduct):", rawImages);
+
+    // Parse the images field - it might be a string, an array, or undefined
+    let parsedImages: string[] = [];
+
+    if (rawImages) {
+      if (typeof rawImages === "string") {
+        // If it's a JSON string, parse it
+        try {
+          parsedImages = JSON.parse(rawImages);
+          console.log("Parsed images from JSON string:", parsedImages);
+        } catch (e) {
+          console.error("Error parsing images JSON:", e);
+          // If it's a single URL string, wrap it in an array
+          if (rawImages.startsWith("http")) {
+            parsedImages = [rawImages];
+            console.log("Treating raw images as a single URL:", parsedImages);
+          }
+        }
+      } else if (Array.isArray(rawImages)) {
+        // If it's already an array, use it
+        parsedImages = [...rawImages];
+        console.log("Raw images is already an array:", parsedImages);
+      }
+    }
+
+    // If we still don't have images, fallback to the form data
+    if (
+      parsedImages.length === 0 &&
+      validData.images &&
+      validData.images.length > 0
+    ) {
+      parsedImages = [...validData.images];
+      console.log("Using images from form data:", parsedImages);
+    }
+
+    // Explicitly add the images field
+    const productWithImages = {
+      ...serializedProduct,
+      images: parsedImages,
+    };
+
+    console.log("Returning product with images:", productWithImages.images);
+
+    return { success: true, product: productWithImages };
   } catch (error) {
     console.error("Failed to update product:", error);
     return { success: false, error: "Failed to update product" };
@@ -340,17 +531,43 @@ export async function getFeaturedProducts(limit?: number) {
     });
 
     // Convert Decimal to number to avoid serialization issues
-    const serializedProducts = products.map((product) => ({
-      ...product,
-      price: parseFloat(product.price.toString()),
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      // Ensure images field is included and is an array
-      // @ts-ignore - TypeScript doesn't recognize the images field yet
-      images: Array.isArray((product as any).images)
-        ? (product as any).images
-        : [],
-    }));
+    const serializedProducts = products.map((product) => {
+      const base = {
+        ...product,
+        price: parseFloat(product.price.toString()),
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+      };
+
+      // Get the raw images data from the database
+      const rawImages = (product as any).images;
+
+      // Parse the images field - it might be a string, an array, or undefined
+      let parsedImages: string[] = [];
+
+      if (rawImages) {
+        if (typeof rawImages === "string") {
+          // If it's a JSON string, parse it
+          try {
+            parsedImages = JSON.parse(rawImages);
+          } catch (e) {
+            // If it's a single URL string, wrap it in an array
+            if (rawImages.startsWith("http")) {
+              parsedImages = [rawImages];
+            }
+          }
+        } else if (Array.isArray(rawImages)) {
+          // If it's already an array, use it
+          parsedImages = [...rawImages];
+        }
+      }
+
+      // Return the product with parsed images
+      return {
+        ...base,
+        images: parsedImages,
+      };
+    });
 
     return { products: serializedProducts };
   } catch (error) {

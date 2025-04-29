@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,19 @@ export function MultipleImageUpload({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Log for debugging
+  console.log("MultipleImageUpload defaultImages:", defaultImages);
+  console.log("MultipleImageUpload initial images state:", images);
+
+  // Update images when defaultImages changes
+  useEffect(() => {
+    console.log("defaultImages changed:", defaultImages);
+    if (defaultImages && Array.isArray(defaultImages)) {
+      console.log("Setting images to:", defaultImages);
+      setImages([...defaultImages]);
+    }
+  }, [defaultImages]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +84,7 @@ export function MultipleImageUpload({
       const newImages = [...images, data.url];
       setImages(newImages);
       onImagesUploaded(newImages);
-      
+
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -106,7 +119,10 @@ export function MultipleImageUpload({
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
           {images.map((image, index) => (
-            <div key={index} className="relative rounded-md border border-gray-200 p-2">
+            <div
+              key={index}
+              className="relative rounded-md border border-gray-200 p-2"
+            >
               <div className="relative">
                 <Image
                   src={image}
