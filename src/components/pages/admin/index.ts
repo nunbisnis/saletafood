@@ -8,6 +8,8 @@ export { StatusBadge } from "./StatusBadge";
 export { CategoryTable } from "./categories/CategoryTable";
 export { CategoryForm } from "./categories/CategoryForm";
 export { CategoryEditForm } from "./categories/CategoryEditForm";
+export { NewCategoryForm } from "./categories/NewCategoryForm";
+export { EditCategoryPageComponent } from "./categories/EditCategoryPage";
 export { AdminCategoriesHeader } from "./AdminCategoriesHeader";
 export { CategoryList } from "./categories/CategoryList";
 export { CategoryPagination } from "./categories/CategoryPagination";

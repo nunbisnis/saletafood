@@ -222,8 +222,8 @@ export function CategoryTable({
           <AlertDialogHeader>
             <AlertDialogTitle>Konfirmasi Hapus Kategori</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus kategori "
-              {categoryToDelete?.name}"?
+              Apakah Anda yakin ingin menghapus kategori &ldquo;
+              {categoryToDelete?.name}&rdquo;?
               {categoryToDelete?.productCount &&
               categoryToDelete.productCount > 0 ? (
                 <div className="mt-2 text-red-500 flex items-center">
@@ -251,8 +251,9 @@ export function CategoryTable({
               }}
               disabled={
                 isDeleting ||
-                (categoryToDelete?.productCount &&
-                  categoryToDelete.productCount > 0)
+                (categoryToDelete?.productCount
+                  ? categoryToDelete.productCount > 0
+                  : false)
               }
               className="bg-red-500 hover:bg-red-600"
             >
