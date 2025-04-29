@@ -4,7 +4,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  image: string;
+  images: string[];
   status: "AVAILABLE" | "OUT_OF_STOCK" | "LOW_STOCK";
   rating?: number | null;
   reviews?: number | null;

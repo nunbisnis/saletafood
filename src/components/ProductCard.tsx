@@ -20,7 +20,11 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/detail/${product.slug}`} className="block">
         <div className="relative h-48 w-full overflow-hidden">
           <Image
-            src={product.image}
+            src={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : product.image
+            }
             alt={product.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

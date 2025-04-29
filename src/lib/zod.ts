@@ -5,7 +5,9 @@ export const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   price: z.coerce.number().positive("Price must be positive"),
-  image: z.string().url("Must be a valid URL"),
+  images: z
+    .array(z.string().url("Must be a valid URL"))
+    .min(1, "At least one image is required"),
   status: z.enum(["AVAILABLE", "OUT_OF_STOCK", "LOW_STOCK"]),
   categoryId: z.string().min(1, "Category is required"),
   ingredients: z.array(z.string()),
@@ -21,7 +23,9 @@ export const productFormSchema = z.object({
   name: z.string().min(1, "Nama produk harus diisi"),
   description: z.string().min(1, "Deskripsi produk harus diisi"),
   price: z.string().min(1, "Harga produk harus diisi"),
-  image: z.string().url("URL gambar tidak valid"),
+  images: z
+    .array(z.string().url("URL gambar tidak valid"))
+    .min(1, "Minimal satu gambar harus diisi"),
   status: z.enum(["AVAILABLE", "OUT_OF_STOCK", "LOW_STOCK"]),
   categoryId: z.string().min(1, "Kategori harus dipilih"),
   ingredients: z.array(z.string()).default([]),

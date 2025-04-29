@@ -93,7 +93,7 @@ export async function createProduct(formData: ProductFormData) {
         name: validData.name,
         description: validData.description,
         price: validData.price,
-        image: validData.image,
+        images: validData.images,
         status: validData.status,
         categoryId: validData.categoryId,
         ingredients: validData.ingredients,

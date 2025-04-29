@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,13 +19,20 @@ import { editProduct } from "@/actions/edit-product-action";
 import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Upload,
+  X,
+  Image as ImageIcon,
+} from "lucide-react";
+import { uploadFile, validateImageFile } from "@/lib/upload-utils";
 
 type ProductFormData = {
   name: string;
   description: string;
   price: string;
-  image: string;
+  images: string[];
   status: "AVAILABLE" | "OUT_OF_STOCK" | "LOW_STOCK";
   categoryId: string;
   ingredients: string[];
@@ -49,8 +56,13 @@ export function ProductForm({
   isEditing = false,
 }: ProductFormProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState(false);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<
@@ -65,7 +77,7 @@ export function ProductForm({
         name: productData.name,
         description: productData.description,
         price: productData.price.toString(),
-        image: productData.image,
+        images: productData.images || [],
         status: productData.status,
         categoryId: productData.categoryId,
         ingredients: productData.ingredients || [],
@@ -78,7 +90,7 @@ export function ProductForm({
       name: "",
       description: "",
       price: "",
-      image: "",
+      images: [],
       status: "AVAILABLE",
       categoryId: "",
       ingredients: [],
@@ -142,6 +154,152 @@ export function ProductForm({
     }
   };
 
+  // Handle adding a new image URL
+  const handleAddImageUrl = () => {
+    const newImageUrl = (
+      document.getElementById("newImageUrl") as HTMLInputElement
+    ).value;
+
+    if (!newImageUrl) return;
+
+    if (!newImageUrl.match(/^https?:\/\/.+/)) {
+      setValidationErrors({
+        ...validationErrors,
+        images:
+          "URL gambar harus valid dan dimulai dengan http:// atau https://",
+      });
+      return;
+    }
+
+    setFormData({
+      ...formData,
+      images: [...(formData.images || []), newImageUrl],
+    });
+
+    // Clear the input field
+    (document.getElementById("newImageUrl") as HTMLInputElement).value = "";
+
+    // Clear any validation errors
+    if (validationErrors.images) {
+      setValidationErrors({
+        ...validationErrors,
+        images: "",
+      });
+    }
+  };
+
+  // Process files for upload
+  const processFiles = async (files: FileList | File[]) => {
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // Process each file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Validate the file
+        const validationError = validateImageFile(file);
+        if (validationError) {
+          setValidationErrors({
+            ...validationErrors,
+            images: validationError,
+          });
+          setIsUploading(false);
+          return;
+        }
+
+        // Update progress
+        setUploadProgress(Math.round((i / files.length) * 50));
+
+        // Upload the file
+        const imageUrl = await uploadFile(file);
+
+        // Add the URL to the form data
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), imageUrl],
+        }));
+
+        // Update progress
+        setUploadProgress(Math.round(((i + 1) / files.length) * 100));
+      }
+
+      // Clear any validation errors
+      if (validationErrors.images) {
+        setValidationErrors({
+          ...validationErrors,
+          images: "",
+        });
+      }
+
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      setValidationErrors({
+        ...validationErrors,
+        images: "Gagal mengunggah gambar. Silakan coba lagi.",
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  // Handle file selection from input
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      processFiles(e.target.files);
+    }
+  };
+
+  // Handle drag events
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  // Handle removing an image URL
+  const handleRemoveImage = (index: number) => {
+    const updatedImages = [...(formData.images || [])];
+    updatedImages.splice(index, 1);
+
+    setFormData({
+      ...formData,
+      images: updatedImages,
+    });
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,7 +361,7 @@ export function ProductForm({
             name: "",
             description: "",
             price: "",
-            image: "",
+            images: [],
             status: "AVAILABLE",
             categoryId: "",
             ingredients: [],
@@ -346,26 +504,148 @@ export function ProductForm({
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="image">URL Gambar Produk</Label>
-            <Input
-              id="image"
-              name="image"
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image || ""}
-              onChange={handleChange}
-              className={validationErrors.image ? "border-red-500" : ""}
-            />
-            {validationErrors.image && (
-              <p className="text-red-500 text-xs mt-1">
-                {validationErrors.image}
-              </p>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <Label>Unggah Gambar Produk</Label>
+                <div
+                  ref={dropZoneRef}
+                  className={`mt-2 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                    isDragging
+                      ? "border-primary bg-primary/5"
+                      : "border-gray-300 hover:border-primary/50"
+                  }`}
+                  onDragEnter={handleDragEnter}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <div className="space-y-2">
+                    <div className="flex justify-center">
+                      <ImageIcon
+                        className={`h-12 w-12 ${
+                          isDragging ? "text-primary" : "text-gray-400"
+                        }`}
+                      />
+                    </div>
+                    <div className="flex flex-wrap justify-center text-sm text-gray-600">
+                      <label
+                        htmlFor="file-upload"
+                        className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none"
+                      >
+                        <span>Unggah gambar</span>
+                      </label>
+                      <p className="pl-1">
+                        atau seret dan lepas gambar di sini
+                      </p>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, GIF hingga 5MB (bisa pilih beberapa gambar)
+                    </p>
+                  </div>
+
+                  {isUploading && (
+                    <div className="mt-4">
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="bg-primary h-2.5 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Mengunggah... {uploadProgress}%
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center">
+                <div className="flex-grow border-t border-gray-300"></div>
+                <span className="flex-shrink mx-4 text-gray-400 text-sm">
+                  ATAU
+                </span>
+                <div className="flex-grow border-t border-gray-300"></div>
+              </div>
+
+              <div>
+                <Label htmlFor="newImageUrl">URL Gambar Produk</Label>
+                <div className="flex mt-1">
+                  <Input
+                    id="newImageUrl"
+                    name="newImageUrl"
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    className={`flex-1 ${
+                      validationErrors.images ? "border-red-500" : ""
+                    }`}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleAddImageUrl}
+                    className="ml-2"
+                  >
+                    Tambah
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Masukkan URL gambar produk jika sudah memiliki URL gambar.
+                </p>
+              </div>
+            </div>
+
+            {validationErrors.images && (
+              <p className="text-red-500 text-xs">{validationErrors.images}</p>
             )}
-            <p className="text-xs text-muted-foreground">
-              Masukkan URL gambar produk. Untuk sementara, gunakan URL gambar
-              dari internet.
-            </p>
+
+            <div>
+              <Label>Gambar yang Ditambahkan</Label>
+              {formData.images && formData.images.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  {formData.images.map((imageUrl, index) => (
+                    <div
+                      key={index}
+                      className="relative group border rounded-md p-2"
+                    >
+                      <div className="relative h-32 w-full">
+                        <img
+                          src={imageUrl}
+                          alt={`Product image ${index + 1}`}
+                          className="h-full w-full object-cover rounded"
+                        />
+                      </div>
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-xs truncate flex-1 pr-2">
+                          {imageUrl.substring(0, 30)}...
+                        </span>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Hapus
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Belum ada gambar yang ditambahkan
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
