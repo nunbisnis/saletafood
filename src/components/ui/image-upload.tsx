@@ -46,10 +46,13 @@ export function ImageUpload({
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `/api/upload?filename=${encodeURIComponent(file.name)}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
@@ -101,13 +104,15 @@ export function ImageUpload({
           </Label>
         </div>
       ) : (
-        <div className="relative rounded-md overflow-hidden">
-          <div className="aspect-video relative">
+        <div className="relative rounded-md border border-gray-200 p-2 max-w-xs mx-auto">
+          <div className="relative">
             <Image
               src={image}
               alt="Uploaded image"
-              fill
-              className="object-cover"
+              width={200}
+              height={200}
+              className="object-contain max-h-48 w-auto h-auto mx-auto"
+              style={{ maxWidth: "100%" }}
             />
           </div>
           <Button

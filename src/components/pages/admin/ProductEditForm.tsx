@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { updateProduct } from "@/actions/product-actions";
 import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { CategoryForm } from "@/components/pages/admin/CategoryForm";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -87,17 +86,17 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
     fetchCategories();
   }, []);
 
-  // Function to fetch categories
+  // Fetch categories on component mount or when refreshed
   const fetchCategories = async () => {
-    try {
-      const { categories: dbCategories, error } = await getCategories();
-      if (error) {
-        console.error("Error fetching categories:", error);
-      } else {
-        setCategories(dbCategories || []);
-      }
-    } catch (err) {
-      console.error("Failed to fetch categories:", err);
+    const result = await getCategories();
+    if ("categories" in result && result.categories) {
+      setCategories(
+        result.categories.map((cat) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+        }))
+      );
     }
   };
 
@@ -111,12 +110,14 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
 
   // Handle input changes
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
 
-    // If name field is updated, generate a slug (only if slug hasn't been manually edited)
-    if (name === "name" && formData.slug === generateSlug(formData.name)) {
+    // If name field is updated, generate a slug
+    if (name === "name") {
       setFormData({
         ...formData,
         [name]: value,
@@ -138,22 +139,6 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
     }
   };
 
-  // Handle image upload
-  const handleImageUpload = (url: string) => {
-    setFormData({
-      ...formData,
-      image: url,
-    });
-    
-    // Clear validation error for image when a new image is uploaded
-    if (validationErrors.image) {
-      setValidationErrors({
-        ...validationErrors,
-        image: "",
-      });
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,8 +150,9 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
     try {
       // Prepare the data for submission
       const productData = {
-        ...formData,
-        price: parseFloat(formData.price),
+        ...(formData as any),
+        price: parseFloat(formData.price || "0"),
+        slug: formData.slug || generateSlug(formData.name || ""),
         ingredients: formData.ingredients || [],
         tags: formData.tags || [],
       };
@@ -174,7 +160,7 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
       // Validate the form data
       const validationResult = productFormSchema.safeParse({
         ...productData,
-        price: formData.price, // Keep as string for validation
+        price: formData.price || "0", // Keep as string for validation
       });
 
       if (!validationResult.success) {
@@ -194,39 +180,30 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
       const result = await updateProduct(product.id, productData);
 
       if (result.success) {
-        setFormSuccess("Produk berhasil diperbarui!");
-        
-        // Redirect after successful update after 1.5 seconds
+        setFormSuccess("Produk berhasil ditambahkan!");
+
+        // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           router.push("/admin/dashboard");
-          router.refresh();
-        }, 1500);
+        }, 2000);
       } else {
-        setFormError(result.error || "Gagal memperbarui produk");
+        setFormError(result.error || "Gagal menambahkan produk");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      setFormError("Terjadi kesalahan saat memperbarui produk");
+      setFormError("Terjadi kesalahan saat menambahkan produk");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <form onSubmit={handleSubmit}>
         <CardHeader>
-          <div className="flex items-center mb-2">
-            <Button variant="ghost" size="sm" asChild className="mr-2">
-              <Link href="/admin/dashboard">
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                Kembali
-              </Link>
-            </Button>
-          </div>
-          <CardTitle>Edit Produk</CardTitle>
+          <CardTitle>Informasi Produk</CardTitle>
           <CardDescription>
-            Perbarui informasi produk yang sudah ada
+            Masukkan detail produk baru yang ingin Anda tambahkan ke menu Anda.
           </CardDescription>
         </CardHeader>
 
@@ -260,7 +237,7 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
                 id="name"
                 name="name"
                 placeholder="contoh: Burger Ayam Pedas"
-                value={formData.name}
+                value={formData.name || ""}
                 onChange={handleChange}
                 className={validationErrors.name ? "border-red-500" : ""}
               />
@@ -276,9 +253,10 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
               <Input
                 id="price"
                 name="price"
-                type="text"
-                placeholder="contoh: 89.99"
-                value={formData.price}
+                type="number"
+                step="0.01"
+                placeholder="89.99"
+                value={formData.price || ""}
                 onChange={handleChange}
                 className={validationErrors.price ? "border-red-500" : ""}
               />
@@ -291,15 +269,16 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi Produk</Label>
-            <Textarea
+            <Label htmlFor="description">Deskripsi</Label>
+            <textarea
               id="description"
               name="description"
-              placeholder="Deskripsi detail tentang produk"
-              value={formData.description}
+              className={`flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                validationErrors.description ? "border-red-500" : ""
+              }`}
+              placeholder="Deskripsikan produk Anda..."
+              value={formData.description || ""}
               onChange={handleChange}
-              rows={4}
-              className={validationErrors.description ? "border-red-500" : ""}
             />
             {validationErrors.description && (
               <p className="text-red-500 text-xs mt-1">
@@ -308,41 +287,66 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="categoryId">Kategori</Label>
-                <CategoryForm onSuccess={fetchCategories} />
-              </div>
-              <select
-                id="categoryId"
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleChange}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                  validationErrors.categoryId ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Pilih kategori</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              {validationErrors.categoryId && (
-                <p className="text-red-500 text-xs mt-1">
-                  {validationErrors.categoryId}
-                </p>
-              )}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="categoryId">Kategori</Label>
+              <CategoryForm onSuccess={fetchCategories} />
             </div>
+            <select
+              id="categoryId"
+              name="categoryId"
+              value={formData.categoryId || ""}
+              onChange={handleChange}
+              className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                validationErrors.categoryId ? "border-red-500" : ""
+              }`}
+            >
+              <option value="">Pilih kategori</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            {validationErrors.categoryId && (
+              <p className="text-red-500 text-xs mt-1">
+                {validationErrors.categoryId}
+              </p>
+            )}
+          </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="image">Gambar Produk</Label>
+            <ImageUpload
+              onImageUploaded={(url) => {
+                setFormData({
+                  ...formData,
+                  image: url,
+                });
+                // Clear validation error when image is uploaded
+                if (validationErrors.image) {
+                  setValidationErrors({
+                    ...validationErrors,
+                    image: "",
+                  });
+                }
+              }}
+              defaultImage={formData.image || ""}
+            />
+            {validationErrors.image && (
+              <p className="text-red-500 text-xs mt-1">
+                {validationErrors.image}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <select
                 id="status"
                 name="status"
-                value={formData.status}
+                value={formData.status || "AVAILABLE"}
                 onChange={handleChange}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -351,59 +355,28 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
                 <option value="OUT_OF_STOCK">Habis</option>
               </select>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="image">URL Gambar</Label>
-            <Input
-              id="image"
-              name="image"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image}
-              onChange={handleChange}
-              className={validationErrors.image ? "border-red-500" : ""}
-            />
-            {validationErrors.image && (
-              <p className="text-red-500 text-xs mt-1">
-                {validationErrors.image}
+            <div className="space-y-2">
+              <Label htmlFor="slug">Slug URL (otomatis)</Label>
+              <Input
+                id="slug"
+                name="slug"
+                value={formData.slug || ""}
+                onChange={handleChange}
+                disabled
+              />
+              <p className="text-xs text-muted-foreground">
+                Slug dibuat otomatis dari nama produk
               </p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              Masukkan URL gambar untuk produk ini
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="slug">Slug</Label>
-            <Input
-              id="slug"
-              name="slug"
-              placeholder="contoh: burger-ayam-pedas"
-              value={formData.slug}
-              onChange={handleChange}
-              className={validationErrors.slug ? "border-red-500" : ""}
-            />
-            {validationErrors.slug && (
-              <p className="text-red-500 text-xs mt-1">
-                {validationErrors.slug}
-              </p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              Slug digunakan untuk URL produk. Hanya boleh berisi huruf kecil, angka, dan tanda hubung.
-            </p>
+            </div>
           </div>
         </CardContent>
 
         <CardFooter className="flex justify-between">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/admin/dashboard")}
-          >
-            Batal
+          <Button variant="outline" asChild>
+            <Link href="/admin/dashboard">Batal</Link>
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
+            {isSubmitting ? "Menyimpan..." : "Simpan Produk"}
           </Button>
         </CardFooter>
       </form>

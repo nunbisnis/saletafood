@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/components/pages/admin";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function NewProductPage() {
   return (
@@ -13,6 +14,7 @@ export default function NewProductPage() {
       </div>
 
       <ProductForm />
+      <Toaster />
     </div>
   );
 }
