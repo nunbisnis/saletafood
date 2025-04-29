@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProductCard, ProductCardSkeleton } from "@/components";
+import { ChevronRight } from "lucide-react";
 
 interface AllProductsGridProps {
   products: any[];
@@ -33,7 +35,21 @@ export function AllProductsGrid({
 
   return (
     <div className="mb-16">
-      <h2 className="text-2xl font-bold mb-8">Semua Produk</h2>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-bold">Semua Produk</h2>
+          <p className="text-muted-foreground mt-2">
+            Jelajahi berbagai pilihan makanan dan minuman lezat kami
+          </p>
+        </div>
+        <Link
+          href="/produk"
+          className="mt-4 md:mt-0 text-primary font-medium flex items-center hover:underline"
+        >
+          Lihat Semua Produk
+          <ChevronRight className="ml-1 h-4 w-4" />
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
         {/* Display loaded products */}
@@ -48,8 +64,8 @@ export function AllProductsGrid({
           ))}
       </div>
 
-      {hasMoreProducts && (
-        <div className="flex justify-center">
+      <div className="mt-8 text-center">
+        {hasMoreProducts ? (
           <Button
             onClick={showMoreProducts}
             variant="outline"
@@ -59,8 +75,12 @@ export function AllProductsGrid({
           >
             {isLoading ? "Memuat..." : "Lihat Lebih Banyak"}
           </Button>
-        </div>
-      )}
+        ) : (
+          <Button asChild>
+            <Link href="/produk">Lihat Semua Produk</Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
