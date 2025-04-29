@@ -41,6 +41,7 @@ export default async function AdminDashboardPage() {
         price: parseFloat(product.price.toString()),
         category: product.category.name,
         status: mapProductStatus(product.status),
+        slug: product.slug,
       }))
     : [];
 

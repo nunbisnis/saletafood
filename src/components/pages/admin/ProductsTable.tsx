@@ -17,6 +17,7 @@ type Product = {
   price: number;
   category: string;
   status: string;
+  slug: string;
 };
 
 interface ProductsTableProps {
@@ -32,9 +33,11 @@ export function ProductsTable({ products }: ProductsTableProps) {
           <table className="w-full">
             <thead>
               <tr className="bg-muted">
-                <th className="px-4 py-3 text-left text-sm font-medium">ID</th>
                 <th className="px-4 py-3 text-left text-sm font-medium">
-                  Nama
+                  Nama Produk
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">
+                  Slug
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium">
                   Harga
@@ -53,12 +56,17 @@ export function ProductsTable({ products }: ProductsTableProps) {
             <tbody>
               {products.map((product) => (
                 <tr key={product.id} className="border-t hover:bg-muted/50">
-                  <td className="px-4 py-3 text-sm">{product.id}</td>
                   <td className="px-4 py-3 text-sm font-medium">
-                    {product.name}
+                    <Link
+                      href={`/admin/dashboard/products/${product.id}`}
+                      className="hover:underline text-primary"
+                    >
+                      {product.name}
+                    </Link>
                   </td>
+                  <td className="px-4 py-3 text-sm">{product.slug}</td>
                   <td className="px-4 py-3 text-sm">
-                    Rp{product.price.toFixed(3)}
+                    Rp{product.price.toLocaleString("id-ID")}
                   </td>
                   <td className="px-4 py-3 text-sm">{product.category}</td>
                   <td className="px-4 py-3 text-sm">
@@ -67,14 +75,21 @@ export function ProductsTable({ products }: ProductsTableProps) {
                   <td className="px-4 py-3 text-sm">
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/dashboard/products/${product.id}`}>
+                        <Link
+                          href={`/admin/dashboard/products/${product.id}`}
+                          className="flex items-center"
+                        >
                           <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                          <span>Edit</span>
                         </Link>
                       </Button>
-                      <Button variant="destructive" size="sm">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="flex items-center"
+                      >
                         <Trash2 className="h-4 w-4 mr-1" />
-                        Hapus
+                        <span>Hapus</span>
                       </Button>
                     </div>
                   </td>
@@ -91,7 +106,14 @@ export function ProductsTable({ products }: ProductsTableProps) {
           <Card key={product.id} className="p-4">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h3 className="font-medium">{product.name}</h3>
+                <h3 className="font-medium">
+                  <Link
+                    href={`/admin/dashboard/products/${product.id}`}
+                    className="hover:underline text-primary"
+                  >
+                    {product.name}
+                  </Link>
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {product.category}
                 </p>
@@ -101,8 +123,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
             <div className="flex justify-between items-center text-sm mb-4">
               <div>
-                <p className="text-muted-foreground">ID: {product.id}</p>
-                <p className="font-medium">Rp{product.price.toFixed(3)}</p>
+                <p className="text-muted-foreground">Slug: {product.slug}</p>
+                <p className="font-medium">
+                  Rp{product.price.toLocaleString("id-ID")}
+                </p>
               </div>
 
               <DropdownMenu>
@@ -114,22 +138,30 @@ export function ProductsTable({ products }: ProductsTableProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href={`/admin/dashboard/products/${product.id}`}>
+                    <Link
+                      href={`/admin/dashboard/products/${product.id}`}
+                      className="flex items-center"
+                    >
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      <span>Edit</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-red-600">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Hapus
+                    <div className="flex items-center">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      <span>Hapus</span>
+                    </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
 
             <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link href={`/admin/dashboard/products/${product.id}`}>
-                Detail
+              <Link
+                href={`/admin/dashboard/products/${product.id}`}
+                className="flex items-center justify-center"
+              >
+                <span>Detail</span>
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
