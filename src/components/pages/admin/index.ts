@@ -3,6 +3,7 @@ export { DashboardStats } from "./DashboardStats";
 export { ProductsTable } from "./ProductsTable";
 export { ProductForm } from "./ProductForm";
 export { ProductEditForm } from "./ProductEditForm";
+export { ProductFormSkeleton } from "./ProductFormSkeleton";
 export { StatusBadge } from "./StatusBadge";
 export { CategoryTable } from "./CategoryTable";
 export { CategoryForm } from "./CategoryForm";

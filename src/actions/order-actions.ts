@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
+import { prisma } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
 export type OrderItemInput = {
   productId: string;
@@ -28,14 +28,34 @@ export async function getOrders(limit?: number) {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
-    
-    return { orders };
+
+    // Serialize orders to handle Decimal values
+    const serializedOrders = orders.map((order) => ({
+      ...order,
+      total: parseFloat(order.total.toString()),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      items: order.items.map((item) => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        createdAt: item.createdAt.toISOString(),
+        updatedAt: item.updatedAt.toISOString(),
+        product: {
+          ...item.product,
+          price: parseFloat(item.product.price.toString()),
+          createdAt: item.product.createdAt.toISOString(),
+          updatedAt: item.product.updatedAt.toISOString(),
+        },
+      })),
+    }));
+
+    return { orders: serializedOrders };
   } catch (error) {
-    console.error('Failed to fetch orders:', error);
-    return { error: 'Failed to fetch orders' };
+    console.error("Failed to fetch orders:", error);
+    return { error: "Failed to fetch orders" };
   }
 }
 
@@ -53,14 +73,34 @@ export async function getOrdersByUser(userId: string) {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
-    
-    return { orders };
+
+    // Serialize orders to handle Decimal values
+    const serializedOrders = orders.map((order) => ({
+      ...order,
+      total: parseFloat(order.total.toString()),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      items: order.items.map((item) => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        createdAt: item.createdAt.toISOString(),
+        updatedAt: item.updatedAt.toISOString(),
+        product: {
+          ...item.product,
+          price: parseFloat(item.product.price.toString()),
+          createdAt: item.product.createdAt.toISOString(),
+          updatedAt: item.product.updatedAt.toISOString(),
+        },
+      })),
+    }));
+
+    return { orders: serializedOrders };
   } catch (error) {
-    console.error('Failed to fetch user orders:', error);
-    return { error: 'Failed to fetch user orders' };
+    console.error("Failed to fetch user orders:", error);
+    return { error: "Failed to fetch user orders" };
   }
 }
 
@@ -79,15 +119,35 @@ export async function getOrderById(id: string) {
         },
       },
     });
-    
+
     if (!order) {
-      return { error: 'Order not found' };
+      return { error: "Order not found" };
     }
-    
-    return { order };
+
+    // Serialize order to handle Decimal values
+    const serializedOrder = {
+      ...order,
+      total: parseFloat(order.total.toString()),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      items: order.items.map((item) => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        createdAt: item.createdAt.toISOString(),
+        updatedAt: item.updatedAt.toISOString(),
+        product: {
+          ...item.product,
+          price: parseFloat(item.product.price.toString()),
+          createdAt: item.product.createdAt.toISOString(),
+          updatedAt: item.product.updatedAt.toISOString(),
+        },
+      })),
+    };
+
+    return { order: serializedOrder };
   } catch (error) {
-    console.error('Failed to fetch order:', error);
-    return { error: 'Failed to fetch order' };
+    console.error("Failed to fetch order:", error);
+    return { error: "Failed to fetch order" };
   }
 }
 
@@ -98,7 +158,7 @@ export async function createOrder(formData: OrderFormData) {
         userId: formData.userId,
         total: formData.total,
         items: {
-          create: formData.items.map(item => ({
+          create: formData.items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
             price: item.price,
@@ -109,17 +169,34 @@ export async function createOrder(formData: OrderFormData) {
         items: true,
       },
     });
-    
-    revalidatePath('/admin/dashboard/orders');
-    
-    return { order };
+
+    revalidatePath("/admin/dashboard/orders");
+
+    // Serialize order to handle Decimal values
+    const serializedOrder = {
+      ...order,
+      total: parseFloat(order.total.toString()),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      items: order.items.map((item) => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        createdAt: item.createdAt.toISOString(),
+        updatedAt: item.updatedAt.toISOString(),
+      })),
+    };
+
+    return { order: serializedOrder };
   } catch (error) {
-    console.error('Failed to create order:', error);
-    return { error: 'Failed to create order' };
+    console.error("Failed to create order:", error);
+    return { error: "Failed to create order" };
   }
 }
 
-export async function updateOrderStatus(id: string, status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED') {
+export async function updateOrderStatus(
+  id: string,
+  status: "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED"
+) {
   try {
     const order = await prisma.order.update({
       where: {
@@ -129,13 +206,21 @@ export async function updateOrderStatus(id: string, status: 'PENDING' | 'PROCESS
         status,
       },
     });
-    
-    revalidatePath('/admin/dashboard/orders');
+
+    revalidatePath("/admin/dashboard/orders");
     revalidatePath(`/admin/dashboard/orders/${id}`);
-    
-    return { order };
+
+    // Serialize order to handle Decimal values
+    const serializedOrder = {
+      ...order,
+      total: parseFloat(order.total.toString()),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+    };
+
+    return { order: serializedOrder };
   } catch (error) {
-    console.error('Failed to update order status:', error);
-    return { error: 'Failed to update order status' };
+    console.error("Failed to update order status:", error);
+    return { error: "Failed to update order status" };
   }
 }

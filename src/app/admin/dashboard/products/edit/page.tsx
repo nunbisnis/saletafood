@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ProductEditForm } from "@/components/pages/admin";
+import { ProductEditForm, ProductFormSkeleton } from "@/components/pages/admin";
 import { getProductById } from "@/actions/product-actions";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -24,22 +24,37 @@ export default function EditProductPage() {
         return;
       }
 
+      console.log("Fetching product with ID:", id);
+
       try {
-        const { product: dbProduct, error: fetchError } = await getProductById(
-          id
-        );
+        const result = await getProductById(id);
+
+        console.log("API response:", result);
+
+        // Check if result is undefined or null
+        if (!result) {
+          setError("Gagal mengambil data produk: Respons tidak valid");
+          console.error("getProductById returned undefined or null");
+          setLoading(false);
+          return;
+        }
+
+        const { product: dbProduct, error: fetchError } = result;
 
         if (fetchError) {
+          console.error("Error fetching product:", fetchError);
           setError(fetchError);
         } else if (!dbProduct) {
+          console.error("Product not found in response");
           setError("Produk tidak ditemukan");
         } else {
+          console.log("Product found:", dbProduct);
           setProduct(dbProduct);
           setError(null);
         }
       } catch (err) {
         setError("Gagal mengambil data produk");
-        console.error(err);
+        console.error("Exception when fetching product:", err);
       } finally {
         setLoading(false);
       }
@@ -58,15 +73,7 @@ export default function EditProductPage() {
       </div>
 
       {loading ? (
-        <div className="w-full flex justify-center items-center py-20">
-          <div className="animate-pulse text-center">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-4 mx-auto"></div>
-            <div className="h-4 bg-gray-200 rounded w-full max-w-md mb-2.5"></div>
-            <div className="h-4 bg-gray-200 rounded w-full max-w-md mb-2.5"></div>
-            <div className="h-4 bg-gray-200 rounded w-full max-w-md mb-2.5"></div>
-            <div className="h-10 bg-gray-200 rounded w-32 mx-auto mt-6"></div>
-          </div>
-        </div>
+        <ProductFormSkeleton />
       ) : error ? (
         <div className="w-full flex flex-col justify-center items-center py-20">
           <div className="text-center">

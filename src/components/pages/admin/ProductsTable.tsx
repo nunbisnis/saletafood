@@ -120,7 +120,12 @@ export function ProductsTable({
               {products.map((product) => (
                 <tr key={product.id} className="border-t hover:bg-muted/50">
                   <td className="px-4 py-3 text-sm font-medium">
-                    {product.name}
+                    <Link
+                      href={`/admin/dashboard/products/edit?id=${product.id}`}
+                      className="hover:text-primary hover:underline cursor-pointer transition-colors"
+                    >
+                      {product.name}
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-sm">{product.slug}</td>
                   <td className="px-4 py-3 text-sm">
@@ -165,7 +170,14 @@ export function ProductsTable({
           <Card key={product.id} className="p-4">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h3 className="font-medium">{product.name}</h3>
+                <h3 className="font-medium">
+                  <Link
+                    href={`/admin/dashboard/products/edit?id=${product.id}`}
+                    className="hover:text-primary hover:underline cursor-pointer transition-colors"
+                  >
+                    {product.name}
+                  </Link>
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {product.category}
                 </p>

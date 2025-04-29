@@ -224,11 +224,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://saletafood_owner:npg_5jZRuoYFab1f@ep-orange-art-a1laikjj-pooler.ap-southeast-1.aws.neon.tech/saletafood?sslmode=require"
+        "value": null
       }
     }
   },

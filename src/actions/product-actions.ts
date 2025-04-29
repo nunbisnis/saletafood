@@ -22,6 +22,11 @@ export async function getProducts(limit?: number) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
+      // Ensure images field is included and is an array
+      // @ts-ignore - TypeScript doesn't recognize the images field yet
+      images: Array.isArray((product as any).images)
+        ? (product as any).images
+        : [],
     }));
 
     return { products: serializedProducts };
@@ -57,6 +62,11 @@ export async function getProductsByCategory(
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
+      // Ensure images field is included and is an array
+      // @ts-ignore - TypeScript doesn't recognize the images field yet
+      images: Array.isArray((product as any).images)
+        ? (product as any).images
+        : [],
     }));
 
     return { products: serializedProducts };
@@ -87,6 +97,11 @@ export async function getProductBySlug(slug: string) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
+      // Ensure images field is included and is an array
+      // @ts-ignore - TypeScript doesn't recognize the images field yet
+      images: Array.isArray((product as any).images)
+        ? (product as any).images
+        : [],
     };
 
     return { product: serializedProduct };
@@ -97,6 +112,12 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function getProductById(id: string) {
+  // Check if id is valid
+  if (!id || typeof id !== "string") {
+    console.error("Invalid product ID:", id);
+    return { error: "Invalid product ID" };
+  }
+
   try {
     const product = await prisma.product.findUnique({
       where: {
@@ -117,6 +138,11 @@ export async function getProductById(id: string) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
+      // Ensure images field is included and is an array
+      // @ts-ignore - TypeScript doesn't recognize the images field yet
+      images: Array.isArray((product as any).images)
+        ? (product as any).images
+        : [],
     };
 
     return { product: serializedProduct };
@@ -141,27 +167,44 @@ export async function createProduct(formData: ProductFormData) {
   try {
     const validData = validationResult.data;
 
-    // Use type assertion to include the images field
+    // Create a data object without the images field first
+    const createData = {
+      name: validData.name,
+      description: validData.description,
+      price: validData.price,
+      image: validData.image,
+      status: validData.status,
+      categoryId: validData.categoryId,
+      ingredients: validData.ingredients,
+      tags: validData.tags,
+      slug: validData.slug,
+    };
+
+    // Create the product without the images field
     const product = await prisma.product.create({
-      data: {
-        name: validData.name,
-        description: validData.description,
-        price: validData.price,
-        image: validData.image,
-        // @ts-ignore - images field is added to the schema but not yet in the generated types
-        images: validData.images,
-        status: validData.status,
-        categoryId: validData.categoryId,
-        ingredients: validData.ingredients,
-        tags: validData.tags,
-        slug: validData.slug,
-      },
+      data: createData,
     });
+
+    // If we need to update the images field, do it in a separate query
+    if (validData.images && validData.images.length > 0) {
+      console.log("Setting images field separately:", validData.images);
+
+      // Use Prisma's raw query to update the images field
+      await prisma.$executeRaw`UPDATE products SET images = ${validData.images} WHERE id = ${product.id}`;
+    }
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/produk");
 
-    return { success: true, product };
+    // Serialize the product object to avoid Decimal serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    };
+
+    return { success: true, product: serializedProduct };
   } catch (error) {
     console.error("Failed to create product:", error);
     return { success: false, error: "Failed to create product" };
@@ -183,31 +226,48 @@ export async function updateProduct(id: string, formData: ProductFormData) {
   try {
     const validData = validationResult.data;
 
-    // Use type assertion to include the images field
+    // Create a data object without the images field first
+    const updateData = {
+      name: validData.name,
+      description: validData.description,
+      price: validData.price,
+      image: validData.image,
+      status: validData.status,
+      categoryId: validData.categoryId,
+      ingredients: validData.ingredients,
+      tags: validData.tags,
+      slug: validData.slug,
+    };
+
+    // Update the product without the images field
     const product = await prisma.product.update({
       where: {
         id,
       },
-      data: {
-        name: validData.name,
-        description: validData.description,
-        price: validData.price,
-        image: validData.image,
-        // @ts-ignore - images field is added to the schema but not yet in the generated types
-        images: validData.images,
-        status: validData.status,
-        categoryId: validData.categoryId,
-        ingredients: validData.ingredients,
-        tags: validData.tags,
-        slug: validData.slug,
-      },
+      data: updateData,
     });
+
+    // If we need to update the images field, do it in a separate query
+    if (validData.images && validData.images.length > 0) {
+      console.log("Updating images field separately:", validData.images);
+
+      // Use Prisma's raw query to update the images field
+      await prisma.$executeRaw`UPDATE products SET images = ${validData.images} WHERE id = ${id}`;
+    }
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath(`/produk/${product.slug}`);
     revalidatePath("/produk");
 
-    return { success: true, product };
+    // Serialize the product object to avoid Decimal serialization issues
+    const serializedProduct = {
+      ...product,
+      price: parseFloat(product.price.toString()),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+    };
+
+    return { success: true, product: serializedProduct };
   } catch (error) {
     console.error("Failed to update product:", error);
     return { success: false, error: "Failed to update product" };
@@ -285,6 +345,11 @@ export async function getFeaturedProducts(limit?: number) {
       price: parseFloat(product.price.toString()),
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
+      // Ensure images field is included and is an array
+      // @ts-ignore - TypeScript doesn't recognize the images field yet
+      images: Array.isArray((product as any).images)
+        ? (product as any).images
+        : [],
     }));
 
     return { products: serializedProducts };
