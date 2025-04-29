@@ -3,25 +3,7 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
-
-// Zod schema for product validation
-export const productSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
-  price: z.coerce.number().positive("Price must be positive"),
-  image: z.string().url("Must be a valid URL"),
-  status: z.enum(["AVAILABLE", "OUT_OF_STOCK", "LOW_STOCK"]),
-  categoryId: z.string().min(1, "Category is required"),
-  ingredients: z.array(z.string()),
-  tags: z.array(z.string()),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be URL-friendly"),
-});
-
-export type ProductFormData = z.infer<typeof productSchema>;
+import { productSchema, type ProductFormData } from "@/lib/zod";
 
 export async function getProducts(limit?: number) {
   try {

@@ -3,7 +3,7 @@ import { Package, AlertTriangle, AlertCircle } from "lucide-react";
 
 // Define the product type
 type Product = {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   category: string;

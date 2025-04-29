@@ -4,45 +4,21 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { DashboardStats, ProductsTable } from "@/components/pages/admin";
 import { PlusCircle, RefreshCcw } from "lucide-react";
+import { getProducts } from "@/actions/product-actions";
 
-// Sample product data
-const products = [
-  {
-    id: 1,
-    name: "Burger Ayam Pedas",
-    price: 89.99,
-    category: "Burger",
-    status: "Tersedia",
-  },
-  {
-    id: 2,
-    name: "Pizza Sayur Supreme",
-    price: 129.99,
-    category: "Pizza",
-    status: "Tersedia",
-  },
-  {
-    id: 3,
-    name: "Burger Sapi Klasik",
-    price: 99.99,
-    category: "Burger",
-    status: "Stok Menipis",
-  },
-  {
-    id: 4,
-    name: "Salmon Panggang",
-    price: 159.99,
-    category: "Makanan Utama",
-    status: "Tersedia",
-  },
-  {
-    id: 5,
-    name: "Brownies Coklat",
-    price: 49.99,
-    category: "Dessert",
-    status: "Habis",
-  },
-];
+// Function to map database product status to UI status
+function mapProductStatus(status: string): string {
+  switch (status) {
+    case "AVAILABLE":
+      return "Tersedia";
+    case "LOW_STOCK":
+      return "Stok Menipis";
+    case "OUT_OF_STOCK":
+      return "Habis";
+    default:
+      return "Tersedia";
+  }
+}
 
 export default async function AdminDashboardPage() {
   // Check if user is authenticated
@@ -53,6 +29,20 @@ export default async function AdminDashboardPage() {
 
   // Get user details
   const user = await currentUser();
+
+  // Fetch products from the database
+  const { products: dbProducts, error } = await getProducts();
+
+  // Map database products to the format expected by the components
+  const products = dbProducts
+    ? dbProducts.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price.toString()),
+        category: product.category.name,
+        status: mapProductStatus(product.status),
+      }))
+    : [];
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10">

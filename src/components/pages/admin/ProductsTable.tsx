@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 
 // Define the product type
 type Product = {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   category: string;

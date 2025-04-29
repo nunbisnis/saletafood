@@ -2,20 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-
-// Zod schema for category validation
-export const categorySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be URL-friendly"),
-  image: z.string().url("Must be a valid URL").optional(),
-});
-
-export type CategoryFormData = z.infer<typeof categorySchema>;
+import { categorySchema, type CategoryFormData } from "@/lib/zod";
 
 export async function getCategories() {
   try {

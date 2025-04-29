@@ -1,7 +1,18 @@
 import { SignIn } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
+  // Check if user is already authenticated
+  const { userId } = await auth();
+
+  // If user is authenticated, redirect to dashboard
+  if (userId) {
+    redirect("/admin/dashboard");
+  }
+
+  // If user is not authenticated, show login form
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
       <Card className="w-full max-w-md p-6">
@@ -17,7 +28,9 @@ export default function AdminLoginPage() {
               footer: "hidden",
             },
           }}
-          redirectUrl="/admin/dashboard"
+          routing="path"
+          path="/admin/login"
+          forceRedirectUrl="/admin/dashboard"
         />
       </Card>
     </div>
