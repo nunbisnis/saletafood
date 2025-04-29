@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import {
-  Menu,
-  X,
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  Settings,
-  ExternalLink,
-} from "lucide-react";
+import { Menu, X, LayoutDashboard, Package, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,9 +15,14 @@ export function AdminHeader() {
       href: "/admin/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
-      active: true,
+      active: false,
     },
-    // { href: "/admin/dashboard/products", label: "Produk", icon: Package },
+    {
+      href: "/admin/dashboard/categories",
+      label: "Kategori",
+      icon: Package,
+      active: false,
+    },
     // { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
     // { href: "/admin/dashboard/customers", label: "Pelanggan", icon: Users },
     // { href: "/admin/dashboard/settings", label: "Pengaturan", icon: Settings },

@@ -37,7 +37,9 @@ export const categorySchema = z.object({
     .string()
     .min(1, "Slug is required")
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be URL-friendly"),
-  image: z.string().url("Must be a valid URL").optional(),
+  image: z
+    .union([z.string().url("Must be a valid URL"), z.string().length(0)])
+    .optional(),
 });
 
 // Category form schema (client-side)
@@ -48,7 +50,9 @@ export const categoryFormSchema = z.object({
     .string()
     .min(1, "Slug harus diisi")
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug harus URL-friendly"),
-  image: z.string().url("URL gambar tidak valid").optional(),
+  image: z
+    .union([z.string().url("URL gambar tidak valid"), z.string().length(0)])
+    .optional(),
 });
 
 // User schemas

@@ -34,13 +34,12 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   const [formData, setFormData] = useState<CategoryFormData>({
     name: "",
-    description: "",
-    slug: "",
-    image: "",
   });
 
   // Generate slug from name
@@ -92,9 +91,9 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
       // Prepare the data for submission
       const categoryData = {
         name: formData.name,
-        description: formData.description || "",
-        slug: formData.slug || generateSlug(formData.name),
-        image: formData.image,
+        description: "",
+        slug: generateSlug(formData.name),
+        image: "",
       };
 
       // Validate the form data
@@ -121,9 +120,6 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
         // Reset form after successful submission
         setFormData({
           name: "",
-          description: "",
-          slug: "",
-          image: "",
         });
 
         // Close dialog and notify parent after 1.5 seconds
@@ -149,12 +145,12 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
           + Kategori Baru
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[350px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Tambah Kategori Baru</DialogTitle>
             <DialogDescription>
-              Buat kategori baru untuk produk Anda.
+              Cukup masukkan nama kategori untuk menambahkan kategori baru.
             </DialogDescription>
           </DialogHeader>
 
@@ -188,57 +184,22 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
                 className={validationErrors.name ? "border-red-500" : ""}
               />
               {validationErrors.name && (
-                <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Deskripsi (Opsional)</Label>
-              <Input
-                id="description"
-                name="description"
-                placeholder="Deskripsi singkat kategori"
-                value={formData.description || ""}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="slug">Slug URL (otomatis)</Label>
-              <Input
-                id="slug"
-                name="slug"
-                value={formData.slug || ""}
-                onChange={handleChange}
-                className={validationErrors.slug ? "border-red-500" : ""}
-              />
-              {validationErrors.slug && (
-                <p className="text-red-500 text-xs mt-1">{validationErrors.slug}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {validationErrors.name}
+                </p>
               )}
               <p className="text-xs text-muted-foreground">
-                Slug dibuat otomatis dari nama kategori
+                Cukup masukkan nama kategori, slug akan dibuat otomatis
               </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image">URL Gambar (Opsional)</Label>
-              <Input
-                id="image"
-                name="image"
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                value={formData.image || ""}
-                onChange={handleChange}
-                className={validationErrors.image ? "border-red-500" : ""}
-              />
-              {validationErrors.image && (
-                <p className="text-red-500 text-xs mt-1">{validationErrors.image}</p>
-              )}
             </div>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
               Batal
             </Button>
             <Button type="submit" disabled={isSubmitting}>

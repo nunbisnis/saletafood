@@ -1,5 +1,12 @@
-export { AdminHeader } from './AdminHeader';
-export { DashboardStats } from './DashboardStats';
-export { ProductsTable } from './ProductsTable';
-export { ProductForm } from './ProductForm';
-export { StatusBadge } from './StatusBadge';
+export { AdminHeader } from "./AdminHeader";
+export { DashboardStats } from "./DashboardStats";
+export { ProductsTable } from "./ProductsTable";
+export { ProductForm } from "./ProductForm";
+export { StatusBadge } from "./StatusBadge";
+export { CategoryTable } from "./CategoryTable";
+export { CategoryForm } from "./CategoryForm";
+export { AdminCategoriesHeader } from "./AdminCategoriesHeader";
+export { CategoryList } from "./CategoryList";
+export { CategoryPagination } from "./CategoryPagination";
+export { CategoryLoadingState } from "./CategoryLoadingState";
+export { CategoryErrorState } from "./CategoryErrorState";

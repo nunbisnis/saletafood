@@ -10,9 +10,21 @@ export async function getCategories() {
       orderBy: {
         name: "asc",
       },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
     });
 
-    return { categories };
+    // Map the categories to include the product count
+    const categoriesWithCount = categories.map((category) => ({
+      ...category,
+      productCount: category._count.products,
+      _count: undefined,
+    }));
+
+    return { categories: categoriesWithCount };
   } catch (error) {
     console.error("Failed to fetch categories:", error);
     return { error: "Failed to fetch categories" };
