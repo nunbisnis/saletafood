@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { categories } from "@/data/categories";
-import { getProductsByCategory } from "@/data/products";
+import { getProductsByCategory, products } from "@/data/products";
 import {
   ProductBreadcrumb,
   ProductHero,
-  CategoryGrid,
+  AllProductsGrid,
   FeaturedCategories,
   PromoBanner,
   QuickLinks,
@@ -30,7 +30,7 @@ export default function ProdukPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ProductBreadcrumb />
       <ProductHero />
-      <CategoryGrid categories={categoriesWithCounts} />
+      <AllProductsGrid products={products} />
       <FeaturedCategories />
       <PromoBanner />
       <QuickLinks categories={categoriesWithCounts} />

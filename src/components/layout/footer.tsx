@@ -73,7 +73,7 @@ export function Footer() {
                     href="/produk"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
-                    Menu
+                    Produk
                   </Link>
                 </li>
                 <li>
@@ -132,15 +132,15 @@ export function Footer() {
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center gap-2 text-muted-foreground">
                   <MapPin size={16} />
-                  <span>Jl. Makanan No. 123, Jakarta</span>
+                  <span>Jl. Wargabakti IV No.82, Purwokerto Lor</span>
                 </li>
                 <li className="flex items-center gap-2 text-muted-foreground">
                   <Mail size={16} />
-                  <span>info@saletafood.com</span>
+                  <span>saletafood@gmail.com</span>
                 </li>
                 <li className="flex items-center gap-2 text-muted-foreground">
                   <Phone size={16} />
-                  <span>+62 812 3456 7890</span>
+                  <span>0857-4737-5614</span>
                 </li>
               </ul>
             </div>

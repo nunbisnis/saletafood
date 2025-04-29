@@ -1,15 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Product } from "@/data/products";
-import {
-  Star,
-  ShoppingCart,
-  Heart,
-  Share2,
-  Clock,
-  Utensils,
-  Flame,
-  Leaf,
-} from "lucide-react";
+import { Star, ShoppingCart, Heart, Share2 } from "lucide-react";
 
 interface ProductInfoProps {
   product: Product;
@@ -82,40 +73,6 @@ export function ProductInfo({ product }: ProductInfoProps) {
           <Share2 className="h-5 w-5" />
         </Button>
       </div>
-
-      {/* Nutrition Facts */}
-      {product.nutritionFacts && (
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-muted/50 p-3 rounded-lg text-center">
-            <Flame className="h-5 w-5 mx-auto mb-1 text-orange-500" />
-            <div className="text-sm font-medium">
-              {product.nutritionFacts.calories}
-            </div>
-            <div className="text-xs text-muted-foreground">Kalori</div>
-          </div>
-          <div className="bg-muted/50 p-3 rounded-lg text-center">
-            <Utensils className="h-5 w-5 mx-auto mb-1 text-blue-500" />
-            <div className="text-sm font-medium">
-              {product.nutritionFacts.protein}g
-            </div>
-            <div className="text-xs text-muted-foreground">Protein</div>
-          </div>
-          <div className="bg-muted/50 p-3 rounded-lg text-center">
-            <Leaf className="h-5 w-5 mx-auto mb-1 text-green-500" />
-            <div className="text-sm font-medium">
-              {product.nutritionFacts.carbs}g
-            </div>
-            <div className="text-xs text-muted-foreground">Karbohidrat</div>
-          </div>
-          <div className="bg-muted/50 p-3 rounded-lg text-center">
-            <Clock className="h-5 w-5 mx-auto mb-1 text-yellow-500" />
-            <div className="text-sm font-medium">
-              {product.nutritionFacts.fat}g
-            </div>
-            <div className="text-xs text-muted-foreground">Lemak</div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
