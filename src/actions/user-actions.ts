@@ -26,9 +26,6 @@ export async function getUserById(id: string) {
       where: {
         id,
       },
-      include: {
-        orders: true,
-      },
     });
 
     if (!user) {
@@ -94,36 +91,5 @@ export async function updateUser(id: string, formData: UserFormData) {
   } catch (error) {
     console.error("Failed to update user:", error);
     return { error: "Failed to update user" };
-  }
-}
-
-export async function deleteUser(id: string) {
-  try {
-    // Check if user has orders
-    const ordersCount = await prisma.order.count({
-      where: {
-        userId: id,
-      },
-    });
-
-    if (ordersCount > 0) {
-      return {
-        error:
-          "Cannot delete user with orders. Please delete the orders first.",
-      };
-    }
-
-    await prisma.user.delete({
-      where: {
-        id,
-      },
-    });
-
-    revalidatePath("/admin/dashboard/users");
-
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to delete user:", error);
-    return { error: "Failed to delete user" };
   }
 }

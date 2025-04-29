@@ -4,7 +4,8 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  image: string;
+  image?: string; // Keep for backward compatibility
+  images?: string[]; // New field for multiple images
   category: string;
   status: "Tersedia" | "Stok Menipis" | "Habis";
   featured?: boolean;

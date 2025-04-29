@@ -124,7 +124,6 @@ export async function deleteProduct(id: string) {
     // Check if product exists
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { orderItems: { select: { id: true }, take: 1 } },
     });
 
     if (!product) {
@@ -134,13 +133,17 @@ export async function deleteProduct(id: string) {
       };
     }
 
+    // For now, we'll skip the order items check since the schema doesn't have orderItems
+    // If you add order functionality later, you can uncomment and update this code
+    /*
     // Check if product has order items
-    if (product.orderItems.length > 0) {
+    if (product.orderItems && product.orderItems.length > 0) {
       return {
         success: false,
         error: "Cannot delete product with existing orders",
       };
     }
+    */
 
     await prisma.product.delete({
       where: { id },

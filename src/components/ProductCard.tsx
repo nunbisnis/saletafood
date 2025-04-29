@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
             src={
               product.images && product.images.length > 0
                 ? product.images[0]
-                : product.image
+                : product.image || "/placeholder-image.jpg"
             }
             alt={product.name}
             fill
@@ -55,7 +55,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
       <CardFooter className="flex justify-between pt-0">
         <span className="text-lg font-bold text-primary">
-          Rp{parseFloat(product.price.toString()).toLocaleString("id-ID")}
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }).format(parseFloat(product.price.toString()))}
         </span>
         <Button
           size="sm"

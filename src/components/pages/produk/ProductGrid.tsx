@@ -29,7 +29,7 @@ export function ProductGrid({ products }: ProductGridProps) {
                 src={
                   product.images && product.images.length > 0
                     ? product.images[0]
-                    : product.image
+                    : product.image || "/placeholder-image.jpg" // Fallback to placeholder if both are undefined
                 }
                 alt={product.name}
                 fill
@@ -82,7 +82,12 @@ export function ProductGrid({ products }: ProductGridProps) {
 
           <CardFooter className="flex justify-between pt-0">
             <span className="text-lg font-bold text-primary">
-              Rp{product.price.toFixed(3)}
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }).format(product.price)}
             </span>
             <Button
               size="sm"
