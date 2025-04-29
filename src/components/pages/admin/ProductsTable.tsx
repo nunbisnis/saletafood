@@ -134,7 +134,7 @@ export function ProductsTable({
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm" asChild>
                         <Link
-                          href={`/admin/dashboard/products/${product.id}`}
+                          href={`/admin/dashboard/products/edit?id=${product.id}`}
                           className="flex items-center"
                         >
                           <Edit className="h-4 w-4 mr-1" />
@@ -191,7 +191,7 @@ export function ProductsTable({
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/admin/dashboard/products/${product.id}`}
+                      href={`/admin/dashboard/products/edit?id=${product.id}`}
                       className="flex items-center"
                     >
                       <Edit className="h-4 w-4 mr-2" />
@@ -210,7 +210,7 @@ export function ProductsTable({
             </div>
 
             <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link href={`/admin/dashboard/products/${product.id}`}>
+              <Link href={`/admin/dashboard/products/edit?id=${product.id}`}>
                 Detail
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Link>
