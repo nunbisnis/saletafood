@@ -91,16 +91,23 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function createProduct(formData: ProductFormData) {
+  console.log("Server received form data:", formData);
+
   // Validate input data
   const validationResult = productSchema.safeParse(formData);
 
   if (!validationResult.success) {
+    const fieldErrors = validationResult.error.flatten().fieldErrors;
+    console.log("Validation failed with errors:", fieldErrors);
+
     return {
       success: false,
       error: "Validation failed",
-      fieldErrors: validationResult.error.flatten().fieldErrors,
+      fieldErrors,
     };
   }
+
+  console.log("Validation successful");
 
   try {
     const validData = validationResult.data;

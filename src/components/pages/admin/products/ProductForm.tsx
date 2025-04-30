@@ -21,6 +21,7 @@ import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2, X, Image as ImageIcon } from "lucide-react";
 import { uploadFile, validateImageFile } from "@/lib/upload-utils";
+import { formatIDR, parseIDR } from "@/lib/currency-utils";
 
 type ProductFormData = {
   name: string;
@@ -70,7 +71,7 @@ export function ProductForm({
         id: productData.id,
         name: productData.name,
         description: productData.description,
-        price: productData.price.toString(),
+        price: formatIDR(parseFloat(productData.price.toString())),
         images: productData.images || [],
         status: productData.status,
         categoryId: productData.categoryId,
@@ -132,6 +133,46 @@ export function ProductForm({
         [name]: value,
         slug: generateSlug(value),
       });
+    }
+    // If price field is updated, format as IDR
+    else if (name === "price") {
+      // Only allow numbers and dots
+      const numericValue = value.replace(/[^\d.]/g, "");
+
+      // Parse the numeric value and format it
+      if (numericValue) {
+        try {
+          // Remove all dots first
+          const cleanValue = numericValue.replace(/\./g, "");
+          // Parse as number
+          const numberValue = parseFloat(cleanValue);
+
+          if (!isNaN(numberValue)) {
+            // Format with thousand separators
+            setFormData({
+              ...formData,
+              [name]: formatIDR(numberValue),
+            });
+          } else {
+            setFormData({
+              ...formData,
+              [name]: numericValue,
+            });
+          }
+        } catch (error) {
+          // If parsing fails, just use the numeric value
+          setFormData({
+            ...formData,
+            [name]: numericValue,
+          });
+        }
+      } else {
+        // If empty, set empty string
+        setFormData({
+          ...formData,
+          [name]: "",
+        });
+      }
     } else {
       setFormData({
         ...formData,
@@ -303,20 +344,29 @@ export function ProductForm({
     setValidationErrors({});
 
     try {
-      // Prepare the data for submission
-      const productFormData = {
+      // Parse the formatted price
+      const parsedPrice = parseIDR(formData.price || "0");
+      console.log("Parsed price:", parsedPrice);
+
+      // Prepare the data for client-side validation
+      const validationData = {
         ...(formData as ProductFormData),
-        price: parseFloat(formData.price || "0"),
+        price: formData.price || "0", // Keep as string for client validation
         slug: formData.slug || generateSlug(formData.name || ""),
         ingredients: formData.ingredients || [],
         tags: formData.tags || [],
       };
+      console.log("Validation data:", validationData);
 
-      // Validate the form data
-      const validationResult = productFormSchema.safeParse({
-        ...productFormData,
-        price: formData.price || "0", // Keep as string for validation
-      });
+      // Prepare the data for submission (with parsed price as number)
+      const productFormData = {
+        ...validationData,
+        price: parsedPrice, // Use parsed price for submission
+      };
+      console.log("Product form data for submission:", productFormData);
+
+      // Validate the form data using the client-side schema
+      const validationResult = productFormSchema.safeParse(validationData);
 
       if (!validationResult.success) {
         const errors = validationResult.error.flatten().fieldErrors;
@@ -345,7 +395,29 @@ export function ProductForm({
             router.push("/admin/dashboard");
           }, 2000);
         } else {
-          setFormError(result.error || "Gagal memperbarui produk");
+          // Handle server-side validation errors if they exist
+          if (result.fieldErrors) {
+            console.log("Server returned field errors:", result.fieldErrors);
+
+            // Convert field errors to the format expected by the form
+            const serverErrors: Record<string, string> = {};
+
+            // Loop through each field error
+            Object.entries(result.fieldErrors).forEach(([key, value]) => {
+              if (Array.isArray(value) && value.length > 0) {
+                serverErrors[key] = value[0];
+              } else if (typeof value === "string") {
+                serverErrors[key] = value;
+              } else {
+                serverErrors[key] = "Field validation failed";
+              }
+            });
+
+            setValidationErrors(serverErrors);
+            setFormError("Mohon perbaiki kesalahan pada form");
+          } else {
+            setFormError(result.error || "Gagal memperbarui produk");
+          }
           setIsSubmitting(false); // Only set to false on error
         }
       } else {
@@ -370,7 +442,29 @@ export function ProductForm({
             router.push("/admin/dashboard");
           }, 2000);
         } else {
-          setFormError(result.error || "Gagal menambahkan produk");
+          // Handle server-side validation errors if they exist
+          if (result.fieldErrors) {
+            console.log("Server returned field errors:", result.fieldErrors);
+
+            // Convert field errors to the format expected by the form
+            const serverErrors: Record<string, string> = {};
+
+            // Loop through each field error
+            Object.entries(result.fieldErrors).forEach(([key, value]) => {
+              if (Array.isArray(value) && value.length > 0) {
+                serverErrors[key] = value[0];
+              } else if (typeof value === "string") {
+                serverErrors[key] = value;
+              } else {
+                serverErrors[key] = "Field validation failed";
+              }
+            });
+
+            setValidationErrors(serverErrors);
+            setFormError("Mohon perbaiki kesalahan pada form");
+          } else {
+            setFormError(result.error || "Gagal menambahkan produk");
+          }
           setIsSubmitting(false); // Only set to false on error
         }
       }
@@ -438,17 +532,26 @@ export function ProductForm({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Harga (Rp)</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                step="0.01"
-                placeholder="89.99"
-                value={formData.price || ""}
-                onChange={handleChange}
-                className={validationErrors.price ? "border-red-500" : ""}
-              />
+              <Label htmlFor="price">Harga</Label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <span className="text-gray-500">Rp</span>
+                </div>
+                <Input
+                  id="price"
+                  name="price"
+                  type="text"
+                  placeholder="Contoh: 100.000"
+                  value={formData.price || ""}
+                  onChange={handleChange}
+                  className={`pl-10 ${
+                    validationErrors.price ? "border-red-500" : ""
+                  }`}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {/* Format: Rp 200.000 (tanpa desimal) */}
+              </p>
               {validationErrors.price && (
                 <p className="text-red-500 text-xs mt-1">
                   {validationErrors.price}
