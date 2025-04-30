@@ -5,3 +5,6 @@ export { ProductForm } from "./products/ProductForm";
 export { StatusBadge } from "./StatusBadge";
 export { DashboardActions } from "./DashboardActions";
 export { DeleteProductDialog } from "./DeleteProductDialog";
+export { CategoriesTable } from "./CategoriesTable";
+export { DeleteCategoryDialog } from "./DeleteCategoryDialog";
+export { CategoryForm } from "./categories/CategoryForm";

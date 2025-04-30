@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, RefreshCcw } from "lucide-react";
+import { PlusCircle, RefreshCcw, TagsIcon } from "lucide-react";
 
 export function DashboardActions() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export function DashboardActions() {
   };
 
   return (
-    <div className="flex gap-2 w-full sm:w-auto">
+    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
       <Button
         variant="outline"
         size="sm"
@@ -43,6 +43,20 @@ export function DashboardActions() {
         >
           <PlusCircle className="h-4 w-4 mr-2" />
           <span>Tambah Produk</span>
+        </Link>
+      </Button>
+      <Button
+        size="sm"
+        variant="secondary"
+        className="flex-1 sm:flex-none"
+        asChild
+      >
+        <Link
+          href="/admin/dashboard/categories"
+          className="flex items-center justify-center"
+        >
+          <TagsIcon className="h-4 w-4 mr-2" />
+          <span>Kelola Kategori</span>
         </Link>
       </Button>
     </div>

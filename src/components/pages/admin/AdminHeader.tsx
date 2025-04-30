@@ -11,6 +11,7 @@ import {
   Users,
   Settings,
   ExternalLink,
+  TagsIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,12 @@ export function AdminHeader() {
       label: "Dashboard",
       icon: LayoutDashboard,
       active: true,
+    },
+    {
+      href: "/admin/dashboard/categories",
+      label: "Kategori",
+      icon: TagsIcon,
+      active: false,
     },
     // { href: "/admin/dashboard/products", label: "Produk", icon: Package },
     // { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
