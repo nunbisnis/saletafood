@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export function PromoBanner() {
@@ -17,11 +18,18 @@ export function PromoBanner() {
               Promo Spesial Bulan Ini
             </h2>
             <p className="text-white/90 mb-6">
-              Dapatkan diskon 20% untuk pembelian produk apa saja dengan
-              minimal pembelian Rp100.000
+              Dapatkan diskon 20% untuk pembelian produk apa saja dengan minimal
+              pembelian Rp100.000
             </p>
-            <Button variant="secondary" size="lg">
-              Pesan Sekarang
+            <Button variant="secondary" size="lg" asChild>
+              <Link
+                href="https://wa.me/6285747375614?text=Halo%20SaletaFood%2C%20saya%20tertarik%20dengan%20promo%20spesial%20bulan%20ini.%20Boleh%20minta%20informasi%20lebih%20lanjut%3F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center"
+              >
+                Pesan Sekarang
+              </Link>
             </Button>
           </div>
         </div>

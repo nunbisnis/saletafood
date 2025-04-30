@@ -10,7 +10,14 @@ export function CTASection() {
           Supplier food and beverage for Hotel
         </p>
         <Button size="lg" variant="secondary" asChild>
-          <Link href="/produk">Pesan Sekarang</Link>
+          <Link
+            href="https://wa.me/6285747375614?text=Halo%20SaletaFood%2C%20saya%20tertarik%20dengan%20produk%20Anda.%20Boleh%20minta%20informasi%20lebih%20lanjut%3F"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center"
+          >
+            Pesan Sekarang
+          </Link>
         </Button>
       </div>
     </section>

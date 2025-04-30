@@ -16,7 +16,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40">
+    <Card className="overflow-hidden group hover:shadow-md transition-all duration-300 border border-border/40 pt-0">
       <Link href={`/detail/${product.slug}`} className="block">
         <div className="relative h-48 w-full overflow-hidden">
           <Image
@@ -66,9 +66,19 @@ export function ProductCard({ product }: ProductCardProps) {
           size="sm"
           className="gap-1"
           disabled={product.status === "OUT_OF_STOCK"}
+          asChild
         >
-          <ShoppingCart className="h-4 w-4" />
-          <span className="hidden sm:inline">Keranjang</span>
+          <Link
+            href={`https://wa.me/6285747375614?text=Halo%20SaletaFood%2C%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(
+              product.name
+            )}.%20Boleh%20minta%20informasi%20lebih%20lanjut%3F`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1"
+          >
+            <ShoppingCart className="h-4 w-4 flex-shrink-0" />
+            <span className="hidden sm:inline">Pesan</span>
+          </Link>
         </Button>
       </CardFooter>
     </Card>
