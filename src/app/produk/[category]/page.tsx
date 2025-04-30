@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { ProductFilters } from "@/components/layout/product-filters";
-import { getProductsByCategory } from "@/data/products";
-import { categories } from "@/data/categories";
+import { getProductsByCategory } from "@/actions/product-actions";
+import { getCategories, getCategoryBySlug } from "@/actions/category-actions";
+import { mapDbCategoryToUiCategory } from "@/types/category";
 import {
   ProductBreadcrumb,
   CategoryHeader,
@@ -18,22 +19,25 @@ export async function generateMetadata({
 }: {
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
-  // Find the category from our categories data
+  // Find the category from our database
   const { category } = await params;
-  const categoryName = decodeURIComponent(category);
-  const categoryData = categories.find(
-    (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
-  );
+  const categorySlug = decodeURIComponent(category);
+  const { category: dbCategory } = await getCategoryBySlug(categorySlug);
 
-  if (!categoryData) {
+  if (!dbCategory) {
     return {
       title: "Kategori Tidak Ditemukan - SaletaFood",
     };
   }
 
+  // Convert database category to UI category
+  const categoryData = mapDbCategoryToUiCategory(dbCategory);
+
   return {
     title: `${categoryData.name} - SaletaFood`,
-    description: `Jelajahi menu ${categoryData.name} kami yang lezat. ${categoryData.description}`,
+    description: `Jelajahi menu ${categoryData.name} kami yang lezat. ${
+      categoryData.description || ""
+    }`,
   };
 }
 
@@ -44,22 +48,31 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
   searchParams: Promise<{ sort?: string; filter?: string }>;
 }) {
-  // Get the category name from the URL
+  // Get the category slug from the URL
   const { category } = await params;
-  const categoryName = decodeURIComponent(category);
+  const categorySlug = decodeURIComponent(category);
 
-  // Find the category from our categories data
-  const categoryData = categories.find(
-    (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
-  );
+  // Find the category from our database
+  const { category: dbCategory } = await getCategoryBySlug(categorySlug);
 
   // If category doesn't exist, show 404
-  if (!categoryData) {
+  if (!dbCategory) {
     notFound();
   }
 
+  // Convert database category to UI category with required props
+  const categoryData = mapDbCategoryToUiCategory(dbCategory);
+
   // Get products for this category
-  let products = getProductsByCategory(categoryData.name);
+  const productsResult = await getProductsByCategory(categorySlug);
+
+  if ("error" in productsResult) {
+    console.error("Error fetching products:", productsResult.error);
+    // Return empty products array if there's an error
+    productsResult.products = [];
+  }
+
+  let products = productsResult.products || [];
 
   // Get search params
   const searchParamsData = await searchParams;
@@ -88,23 +101,32 @@ export default async function CategoryPage({
   if (searchParamsData.filter) {
     switch (searchParamsData.filter) {
       case "available":
-        products = products.filter((p) => p.status === "Tersedia");
+        products = products.filter((p) => p.status === "AVAILABLE");
         break;
       case "low-stock":
-        products = products.filter((p) => p.status === "Stok Menipis");
+        products = products.filter((p) => p.status === "LOW_STOCK");
         break;
       case "out-of-stock":
-        products = products.filter((p) => p.status === "Habis");
+        products = products.filter((p) => p.status === "OUT_OF_STOCK");
         break;
       default:
         break;
     }
   }
 
+  // Fetch all categories for the "Other Categories" section
+  const { categories: dbCategories } = await getCategories();
+
+  // Convert all database categories to UI categories
+  const allCategories =
+    dbCategories?.map((cat) => mapDbCategoryToUiCategory(cat)) || [];
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ProductBreadcrumb category={categoryData.name} />
-      <CategoryHeader category={categoryData} />
+      <CategoryHeader
+        category={categoryData as any} // Type cast to avoid TypeScript errors
+      />
 
       {/* Filters and Sorting */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -114,12 +136,15 @@ export default async function CategoryPage({
 
       {/* Products Grid or Empty State */}
       {products.length > 0 ? (
-        <ProductGrid products={products} />
+        <ProductGrid products={products as any} /> // Type cast to avoid TypeScript errors
       ) : (
-        <EmptyProductState categoryName={categoryName} />
+        <EmptyProductState categoryName={categoryData.name} />
       )}
 
-      <OtherCategories categories={categories} currentCategory={categoryName} />
+      <OtherCategories
+        categories={allCategories as any} // Type cast to avoid TypeScript errors
+        currentCategory={categoryData.name}
+      />
       <BackToProducts />
     </div>
   );

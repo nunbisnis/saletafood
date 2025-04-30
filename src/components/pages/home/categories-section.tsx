@@ -2,18 +2,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getProductsByCategory } from "@/data/products";
-import { categories } from "@/data/categories";
+import { getCategories } from "@/actions/category-actions";
+import { prisma } from "@/lib/db";
+import { mapDbCategoryToUiCategory } from "@/types/category";
 
-export function CategoriesSection() {
-  // Update category counts from actual product data
-  const categoriesWithCounts = categories.map((category) => {
-    const count = getProductsByCategory(category.name).length;
-    return {
-      ...category,
-      count: count || category.count, // Use the actual count or fallback to the predefined count
-    };
-  });
+export async function CategoriesSection() {
+  // Fetch categories from the database
+  const { categories: dbCategories } = await getCategories();
+
+  // Get product counts for each category
+  const categoriesWithCounts = await Promise.all(
+    (dbCategories || []).map(async (category) => {
+      const count = await prisma.product.count({
+        where: {
+          categoryId: category.id,
+        },
+      });
+
+      // Map database category to UI category
+      const uiCategory = mapDbCategoryToUiCategory(category);
+
+      return {
+        ...uiCategory,
+        count,
+      };
+    })
+  );
 
   return (
     <section className="py-16 bg-muted/30">
@@ -26,7 +40,7 @@ export function CategoriesSection() {
             </p>
           </div>
           <Link
-            href="/produk"
+            href="/kategori"
             className="mt-4 md:mt-0 text-primary font-medium flex items-center hover:underline"
           >
             Lihat Semua Kategori
@@ -38,13 +52,13 @@ export function CategoriesSection() {
           {categoriesWithCounts.map((category) => (
             <Link
               key={category.id}
-              href={`/produk/${category.name.toLowerCase()}`}
+              href={`/produk/${category.slug}`}
               className="block group"
             >
               <div className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-border/40 h-full flex flex-col">
                 <div className="relative h-48 w-full overflow-hidden">
                   <Image
-                    src={category.image}
+                    src={category.image || "/placeholder-image.jpg"}
                     alt={category.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -56,12 +70,21 @@ export function CategoriesSection() {
                       category.bgColor
                     )}
                   >
-                    <category.icon
-                      className={cn(
-                        "h-6 w-6 text-gradient bg-gradient-to-r",
-                        category.color
-                      )}
-                    />
+                    {typeof category.icon === "function" ? (
+                      <category.icon
+                        className={cn(
+                          "h-6 w-6 text-gradient bg-gradient-to-r",
+                          category.color
+                        )}
+                      />
+                    ) : (
+                      <ChevronRight
+                        className={cn(
+                          "h-6 w-6 text-gradient bg-gradient-to-r",
+                          category.color
+                        )}
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -73,7 +96,7 @@ export function CategoriesSection() {
                     </span>
                   </div>
                   <p className="text-muted-foreground text-sm mb-4">
-                    {category.description}
+                    {category.description || ""}
                   </p>
                   <div className="mt-auto">
                     <span className="text-primary font-medium flex items-center text-sm group-hover:underline">
