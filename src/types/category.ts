@@ -5,6 +5,7 @@ export interface DbCategory {
   description: string | null;
   slug: string;
   image: string | null;
+  iconName: string | null;
   createdAt: Date;
   updatedAt: Date;
   products?: any[]; // We don't need the full product type here
@@ -18,6 +19,7 @@ export interface UiCategory {
   slug: string;
   image: string | null;
   icon: any; // For Lucide icons
+  iconName: string | null; // Store the icon name
   color: string;
   bgColor: string;
   count?: number;
@@ -47,11 +49,15 @@ export function mapDbCategoryToUiCategory(dbCategory: DbCategory): UiCategory {
   const color = colorMappings[colorIndex].color;
   const bgColor = colorMappings[colorIndex].bgColor;
 
+  // Default icon function
+  let icon = () => null;
+
   return {
     ...dbCategory,
     description: dbCategory.description || "",
     image: dbCategory.image || "/placeholder-image.jpg",
-    icon: () => null, // Default icon function
+    icon, // This will be replaced at runtime in the component
+    iconName: dbCategory.iconName,
     color,
     bgColor,
   };

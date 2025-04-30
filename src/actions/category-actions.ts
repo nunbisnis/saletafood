@@ -10,6 +10,16 @@ export async function getCategories() {
       orderBy: {
         name: "asc",
       },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        slug: true,
+        image: true,
+        iconName: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     return { categories };
@@ -25,7 +35,15 @@ export async function getCategoryBySlug(slug: string) {
       where: {
         slug,
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        slug: true,
+        image: true,
+        iconName: true,
+        createdAt: true,
+        updatedAt: true,
         products: true,
       },
     });
@@ -71,6 +89,7 @@ export async function createCategory(formData: CategoryFormData) {
         description: validData.description,
         slug: validData.slug,
         image: validData.image,
+        iconName: validData.iconName,
       },
     });
 
@@ -108,6 +127,7 @@ export async function updateCategory(id: string, formData: CategoryFormData) {
         description: validData.description,
         slug: validData.slug,
         image: validData.image,
+        iconName: validData.iconName,
       },
     });
 

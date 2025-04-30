@@ -1,6 +1,8 @@
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategories } from "@/actions/category-actions";
 import { prisma } from "@/lib/db";
@@ -21,6 +23,9 @@ export async function CategoriesSection() {
 
       // Map database category to UI category
       const uiCategory = mapDbCategoryToUiCategory(category);
+
+      // Log the category data to verify iconName is being fetched
+      console.log(`Category ${category.name} iconName:`, category.iconName);
 
       return {
         ...uiCategory,
@@ -49,7 +54,7 @@ export async function CategoriesSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categoriesWithCounts.map((category) => (
+          {categoriesWithCounts.slice(0, 3).map((category) => (
             <Link
               key={category.id}
               href={`/produk/${category.slug}`}
@@ -70,14 +75,31 @@ export async function CategoriesSection() {
                       category.bgColor
                     )}
                   >
-                    {typeof category.icon === "function" ? (
-                      <category.icon
-                        className={cn(
-                          "h-6 w-6 text-gradient bg-gradient-to-r",
-                          category.color
-                        )}
-                      />
+                    {/* Check if iconName exists and is a valid Lucide icon */}
+                    {category.iconName &&
+                    typeof category.iconName === "string" &&
+                    LucideIcons[
+                      category.iconName as keyof typeof LucideIcons
+                    ] ? (
+                      (() => {
+                        // Log the icon name to verify it's being used
+                        console.log(`Rendering icon: ${category.iconName}`);
+
+                        const IconComponent = LucideIcons[
+                          category.iconName as keyof typeof LucideIcons
+                        ] as React.ElementType;
+
+                        return (
+                          <IconComponent
+                            className={cn(
+                              "h-6 w-6 text-gradient bg-gradient-to-r",
+                              category.color
+                            )}
+                          />
+                        );
+                      })()
                     ) : (
+                      // Fallback to ChevronRight if no valid icon
                       <ChevronRight
                         className={cn(
                           "h-6 w-6 text-gradient bg-gradient-to-r",

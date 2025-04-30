@@ -6,7 +6,10 @@ interface OtherCategoriesProps {
   currentCategory: string;
 }
 
-export function OtherCategories({ categories, currentCategory }: OtherCategoriesProps) {
+export function OtherCategories({
+  categories,
+  currentCategory,
+}: OtherCategoriesProps) {
   return (
     <div className="border-t pt-8">
       <h3 className="text-xl font-bold mb-6">Kategori Lainnya</h3>

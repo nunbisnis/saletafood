@@ -8,3 +8,4 @@ export { DeleteProductDialog } from "./DeleteProductDialog";
 export { CategoriesTable } from "./CategoriesTable";
 export { DeleteCategoryDialog } from "./DeleteCategoryDialog";
 export { CategoryForm } from "./categories/CategoryForm";
+export { IconSelector } from "./categories/IconSelector";

@@ -20,12 +20,14 @@ import { categoryFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2, ImageIcon, X } from "lucide-react";
 import { uploadFile, validateImageFile } from "@/lib/upload-utils";
+import { IconSelector } from "./IconSelector";
 
 type CategoryFormData = {
   name: string;
   description?: string;
   slug: string;
   image?: string;
+  iconName?: string;
 };
 
 type CategoryFormProps = {
@@ -57,6 +59,7 @@ export function CategoryForm({
         description: categoryData.description || "",
         slug: categoryData.slug,
         image: categoryData.image || "",
+        iconName: categoryData.iconName || "",
       };
     }
 
@@ -65,6 +68,7 @@ export function CategoryForm({
       description: "",
       slug: "",
       image: "",
+      iconName: "",
     };
   });
 
@@ -212,6 +216,14 @@ export function CategoryForm({
     });
   };
 
+  // Handle icon selection
+  const handleIconSelect = (iconName: string) => {
+    setFormData({
+      ...formData,
+      iconName,
+    });
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,6 +301,7 @@ export function CategoryForm({
             description: "",
             slug: "",
             image: "",
+            iconName: "",
           });
 
           // Redirect to dashboard after 2 seconds
@@ -425,7 +438,13 @@ export function CategoryForm({
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {/* Icon Selector */}
+            <IconSelector
+              selectedIcon={formData.iconName || null}
+              onSelectIcon={handleIconSelect}
+            />
+
             <div>
               <Label>Gambar Kategori (Opsional)</Label>
               <div
