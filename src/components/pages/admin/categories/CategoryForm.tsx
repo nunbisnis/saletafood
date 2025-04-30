@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,8 @@ import { Label } from "@/components/ui/label";
 import { createCategory, updateCategory } from "@/actions/category-actions";
 import { categoryFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2, ImageIcon } from "lucide-react";
+import { AlertCircle, CheckCircle2, ImageIcon, X } from "lucide-react";
+import { uploadFile, validateImageFile } from "@/lib/upload-utils";
 
 type CategoryFormData = {
   name: string;
@@ -37,7 +38,11 @@ export function CategoryForm({
   isEditing = false,
 }: CategoryFormProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState(false);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<
@@ -98,6 +103,113 @@ export function CategoryForm({
         [name]: "",
       });
     }
+  };
+
+  // Process files for upload
+  const processFiles = async (files: FileList | File[]) => {
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // We only need one image for category, so just use the first file
+      const file = files[0];
+
+      // Validate the file
+      const validationError = validateImageFile(file, 2); // Max 2MB
+      if (validationError) {
+        setValidationErrors({
+          ...validationErrors,
+          image: validationError,
+        });
+        setIsUploading(false);
+        return;
+      }
+
+      // Update progress
+      setUploadProgress(50);
+
+      // Upload the file
+      const imageUrl = await uploadFile(file);
+
+      // Add the URL to the form data
+      setFormData((prev) => ({
+        ...prev,
+        image: imageUrl,
+      }));
+
+      // Clear any validation errors
+      if (validationErrors.image) {
+        setValidationErrors({
+          ...validationErrors,
+          image: "",
+        });
+      }
+
+      // Update progress
+      setUploadProgress(100);
+
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setValidationErrors({
+        ...validationErrors,
+        image: "Gagal mengunggah gambar. Silakan coba lagi.",
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  // Handle file selection from input
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      processFiles(e.target.files);
+    }
+  };
+
+  // Handle drag events
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  // Handle removing the image
+  const handleRemoveImage = () => {
+    setFormData({
+      ...formData,
+      image: "",
+    });
   };
 
   // Handle form submission
@@ -313,31 +425,109 @@ export function CategoryForm({
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="image">URL Gambar (Opsional)</Label>
-            <Input
-              id="image"
-              name="image"
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image || ""}
-              onChange={handleChange}
-              className={validationErrors.image ? "border-red-500" : ""}
-            />
-            <p className="text-xs text-muted-foreground">
-              Masukkan URL gambar untuk kategori ini
-            </p>
-            {validationErrors.image && (
-              <p className="text-red-500 text-xs mt-1">
-                {validationErrors.image}
+          <div className="space-y-4">
+            <div>
+              <Label>Gambar Kategori (Opsional)</Label>
+              <div
+                className={`mt-2 border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                  isDragging
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-300 hover:border-primary/50"
+                }`}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <div className="space-y-2">
+                  <div className="flex justify-center">
+                    <ImageIcon
+                      className={`h-10 w-10 ${
+                        isDragging ? "text-primary" : "text-gray-400"
+                      }`}
+                    />
+                  </div>
+                  <div className="flex flex-wrap justify-center text-sm text-gray-600">
+                    <label
+                      htmlFor="file-upload"
+                      className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none"
+                    >
+                      <span>Unggah gambar</span>
+                    </label>
+                    <p className="pl-1">atau seret dan lepas gambar di sini</p>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF hingga 2MB
+                  </p>
+                </div>
+
+                {isUploading && (
+                  <div className="mt-4">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Mengunggah... {uploadProgress}%
+                    </p>
+                  </div>
+                )}
+              </div>
+              {validationErrors.image && (
+                <p className="text-red-500 text-xs mt-1">
+                  {validationErrors.image}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="flex-shrink mx-4 text-gray-400 text-sm">
+                ATAU
+              </span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="image">URL Gambar (Opsional)</Label>
+              <Input
+                id="image"
+                name="image"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={formData.image || ""}
+                onChange={handleChange}
+                className={validationErrors.image ? "border-red-500" : ""}
+              />
+              <p className="text-xs text-muted-foreground">
+                Masukkan URL gambar untuk kategori ini
               </p>
-            )}
+            </div>
           </div>
 
           {formData.image && (
             <div className="space-y-2">
               <Label>Preview Gambar</Label>
-              <div className="border rounded-md p-2">
+              <div className="border rounded-md p-2 relative">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="absolute top-2 right-2 h-8 w-8 p-0"
+                  onClick={handleRemoveImage}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
                 <div className="relative h-40 w-full">
                   <Image
                     src={formData.image}
