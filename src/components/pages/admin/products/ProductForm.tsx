@@ -30,7 +30,7 @@ type ProductFormData = {
   images: string[];
   status: "AVAILABLE" | "OUT_OF_STOCK" | "LOW_STOCK";
   categoryId: string;
-  ingredients: string[];
+  furtherDetails: string[];
   tags: string[];
   slug?: string;
 };
@@ -75,7 +75,7 @@ export function ProductForm({
         images: productData.images || [],
         status: productData.status,
         categoryId: productData.categoryId,
-        ingredients: productData.ingredients || [],
+        furtherDetails: productData.furtherDetails || [],
         tags: productData.tags || [],
         slug: productData.slug,
       };
@@ -88,7 +88,7 @@ export function ProductForm({
       images: [],
       status: "AVAILABLE",
       categoryId: "",
-      ingredients: [],
+      furtherDetails: [],
       tags: [],
     };
   });
@@ -353,7 +353,7 @@ export function ProductForm({
         ...(formData as ProductFormData),
         price: formData.price || "0", // Keep as string for client validation
         slug: formData.slug || generateSlug(formData.name || ""),
-        ingredients: formData.ingredients || [],
+        furtherDetails: formData.furtherDetails || [],
         tags: formData.tags || [],
       };
       console.log("Validation data:", validationData);
@@ -432,7 +432,7 @@ export function ProductForm({
             images: [],
             status: "AVAILABLE",
             categoryId: "",
-            ingredients: [],
+            furtherDetails: [],
             tags: [],
           });
 
@@ -746,6 +746,84 @@ export function ProductForm({
                 </p>
               )}
             </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label>Deskripsi Lebih Lanjut</Label>
+            <div className="flex gap-2">
+              <Input
+                id="newDetail"
+                name="newDetail"
+                placeholder="Tambahkan informasi tambahan tentang produk"
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  const newDetail = (
+                    document.getElementById("newDetail") as HTMLInputElement
+                  ).value;
+                  if (newDetail.trim()) {
+                    setFormData({
+                      ...formData,
+                      furtherDetails: [
+                        ...(formData.furtherDetails || []),
+                        newDetail.trim(),
+                      ],
+                    });
+                    (
+                      document.getElementById("newDetail") as HTMLInputElement
+                    ).value = "";
+                  }
+                }}
+              >
+                Tambah
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Tambahkan informasi lebih lanjut tentang produk ini (fitur,
+              manfaat, dll.)
+            </p>
+
+            {formData.furtherDetails && formData.furtherDetails.length > 0 ? (
+              <div className="mt-2 border rounded-md p-4">
+                <h4 className="text-sm font-medium mb-2">
+                  Deskripsi yang Ditambahkan:
+                </h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  {formData.furtherDetails.map((detail, index) => (
+                    <li
+                      key={index}
+                      className="text-sm flex items-start justify-between group"
+                    >
+                      <span className="flex-1">{detail}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 opacity-0 group-hover:opacity-100"
+                        onClick={() => {
+                          const updatedDetails = [
+                            ...(formData.furtherDetails || []),
+                          ];
+                          updatedDetails.splice(index, 1);
+                          setFormData({
+                            ...formData,
+                            furtherDetails: updatedDetails,
+                          });
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground mt-2">
+                Belum ada deskripsi lebih lanjut yang ditambahkan
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

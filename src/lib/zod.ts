@@ -10,7 +10,7 @@ export const productSchema = z.object({
     .min(1, "At least one image is required"),
   status: z.enum(["AVAILABLE", "OUT_OF_STOCK", "LOW_STOCK"]),
   categoryId: z.string().min(1, "Category is required"),
-  ingredients: z.array(z.string()),
+  furtherDetails: z.array(z.string()),
   tags: z.array(z.string()),
   slug: z
     .string()
@@ -28,7 +28,7 @@ export const productFormSchema = z.object({
     .min(1, "Minimal satu gambar harus diisi"),
   status: z.enum(["AVAILABLE", "OUT_OF_STOCK", "LOW_STOCK"]),
   categoryId: z.string().min(1, "Kategori harus dipilih"),
-  ingredients: z.array(z.string()).default([]),
+  furtherDetails: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
   slug: z.string().optional(),
 });

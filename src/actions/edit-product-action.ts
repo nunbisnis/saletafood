@@ -30,7 +30,7 @@ export async function editProduct(id: string, formData: ProductFormData) {
         images: validData.images,
         status: validData.status,
         categoryId: validData.categoryId,
-        ingredients: validData.ingredients,
+        furtherDetails: validData.furtherDetails,
         tags: validData.tags,
         slug: validData.slug,
       },

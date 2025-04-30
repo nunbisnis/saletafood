@@ -34,21 +34,21 @@ model Category {
 }
 
 model Product {
-  id          String        @id @default(cuid())
-  name        String
-  description String
-  price       Decimal       @db.Decimal(10, 2)
-  images      String[]
-  status      ProductStatus @default(AVAILABLE)
-  rating      Float?
-  reviews     Int?
-  slug        String        @unique
-  categoryId  String        @map("category_id")
-  ingredients String[]
-  tags        String[]
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  category    Category      @relation(fields: [categoryId], references: [id])
+  id             String        @id @default(cuid())
+  name           String
+  description    String
+  price          Decimal       @db.Decimal(10, 2)
+  images         String[]
+  status         ProductStatus @default(AVAILABLE)
+  rating         Float?
+  reviews        Int?
+  slug           String        @unique
+  categoryId     String        @map("category_id")
+  furtherDetails String[]      @map("further_details")
+  tags           String[]
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  category       Category      @relation(fields: [categoryId], references: [id])
 
   @@map("products")
 }

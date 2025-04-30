@@ -10,7 +10,7 @@ export interface Product {
   reviews?: number | null;
   slug: string;
   categoryId: string;
-  ingredients: string[];
+  furtherDetails: string[];
   tags: string[];
   category?: {
     id: string;
