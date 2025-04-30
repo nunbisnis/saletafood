@@ -1,9 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
-import * as LucideIcons from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -13,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { getCategories } from "@/actions/category-actions";
 import { mapDbCategoryToUiCategory } from "@/types/category";
+import { renderCategoryIcon } from "@/lib/icon-utils";
 
 export const metadata = {
   title: "Kategori Tidak Ditemukan - SaletaFood",
@@ -26,49 +24,6 @@ export default async function CategoryNotFound() {
   // Map database categories to UI categories
   const categories =
     dbCategories?.map((cat) => mapDbCategoryToUiCategory(cat)) || [];
-
-  // Function to render the appropriate icon
-  const renderIcon = (category: any) => {
-    if (
-      category.iconName &&
-      typeof category.iconName === "string" &&
-      LucideIcons[category.iconName as keyof typeof LucideIcons]
-    ) {
-      // If iconName exists and is a valid Lucide icon, render it
-      const IconComponent = LucideIcons[
-        category.iconName as keyof typeof LucideIcons
-      ] as React.ElementType;
-
-      return (
-        <IconComponent
-          className={cn(
-            "h-5 w-5 text-gradient bg-gradient-to-r",
-            category.color
-          )}
-        />
-      );
-    } else if (typeof category.icon === "function") {
-      // Fallback to icon function if available (for backward compatibility)
-      return (
-        <category.icon
-          className={cn(
-            "h-5 w-5 text-gradient bg-gradient-to-r",
-            category.color
-          )}
-        />
-      );
-    } else {
-      // Default fallback to ChevronRight if no valid icon is found
-      return (
-        <ChevronRight
-          className={cn(
-            "h-5 w-5 text-gradient bg-gradient-to-r",
-            category.color
-          )}
-        />
-      );
-    }
-  };
 
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
@@ -101,7 +56,7 @@ export default async function CategoryNotFound() {
                 className="flex flex-col items-center p-2 rounded-lg hover:bg-muted transition-colors"
               >
                 <div className={`p-2 rounded-full ${category.bgColor} mb-2`}>
-                  {renderIcon(category)}
+                  {renderCategoryIcon(category, "h-5 w-5")}
                 </div>
                 <span className="text-xs font-medium text-center">
                   {category.name}

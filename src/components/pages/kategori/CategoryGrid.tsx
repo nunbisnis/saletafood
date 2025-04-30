@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import * as LucideIcons from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UiCategory } from "@/types/category";
+import { renderCategoryIcon } from "@/lib/icon-utils";
 
 interface CategoryGridProps {
   categories: (UiCategory & { count: number })[];
@@ -33,37 +33,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                   category.bgColor
                 )}
               >
-                {category.iconName &&
-                typeof category.iconName === "string" &&
-                LucideIcons[category.iconName as keyof typeof LucideIcons] ? (
-                  (() => {
-                    const IconComponent = LucideIcons[
-                      category.iconName as keyof typeof LucideIcons
-                    ] as React.ElementType;
-                    return (
-                      <IconComponent
-                        className={cn(
-                          "h-6 w-6 text-gradient bg-gradient-to-r",
-                          category.color
-                        )}
-                      />
-                    );
-                  })()
-                ) : typeof category.icon === "function" ? (
-                  <category.icon
-                    className={cn(
-                      "h-6 w-6 text-gradient bg-gradient-to-r",
-                      category.color
-                    )}
-                  />
-                ) : (
-                  <ChevronRight
-                    className={cn(
-                      "h-6 w-6 text-gradient bg-gradient-to-r",
-                      category.color
-                    )}
-                  />
-                )}
+                {renderCategoryIcon(category, "h-6 w-6")}
               </div>
             </div>
 

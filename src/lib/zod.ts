@@ -3,7 +3,10 @@ import { z } from "zod";
 // Product schemas
 export const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(300, "Description must be at most 300 characters"),
   price: z.coerce.number().positive("Price must be positive"),
   images: z
     .array(z.string().url("Must be a valid URL"))
@@ -21,7 +24,10 @@ export const productSchema = z.object({
 // Product form schema (client-side)
 export const productFormSchema = z.object({
   name: z.string().min(1, "Nama produk harus diisi"),
-  description: z.string().min(1, "Deskripsi produk harus diisi"),
+  description: z
+    .string()
+    .min(1, "Deskripsi produk harus diisi")
+    .max(300, "Deskripsi produk maksimal 300 karakter"),
   price: z.string().min(1, "Harga produk harus diisi"),
   images: z
     .array(z.string().url("URL gambar tidak valid"))

@@ -586,7 +586,12 @@ export function ProductForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi</Label>
+            <div className="flex justify-between">
+              <Label htmlFor="description">Deskripsi</Label>
+              <span className="text-xs text-muted-foreground">
+                {formData.description?.length || 0}/300 karakter
+              </span>
+            </div>
             <textarea
               id="description"
               name="description"
@@ -596,7 +601,11 @@ export function ProductForm({
               placeholder="Deskripsikan produk Anda..."
               value={formData.description || ""}
               onChange={handleChange}
+              maxLength={300}
             />
+            <p className="text-xs text-muted-foreground">
+              Maksimal 300 karakter untuk deskripsi produk
+            </p>
             {validationErrors.description && (
               <p className="text-red-500 text-xs mt-1">
                 {validationErrors.description}
