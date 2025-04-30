@@ -1,6 +1,8 @@
 import { Metadata } from "next";
-import { categories } from "@/data/categories";
 import { getProducts } from "@/actions/product-actions";
+import { getCategories } from "@/actions/category-actions";
+import { mapDbCategoryToUiCategory } from "@/types/category";
+import { prisma } from "@/lib/db";
 import {
   ProductBreadcrumb,
   ProductHero,
@@ -20,19 +22,28 @@ export default async function ProdukPage() {
   // Fetch products from the database
   const { products: dbProducts } = await getProducts();
 
-  // Map database categories to the format expected by the components
-  const categoriesWithCounts = categories.map((category) => {
-    // Count products in this category
-    const count =
-      dbProducts?.filter(
-        (p) => p.category.name.toLowerCase() === category.name.toLowerCase()
-      ).length || 0;
+  // Fetch categories from the database
+  const { categories: dbCategories } = await getCategories();
 
-    return {
-      ...category,
-      count: count,
-    };
-  });
+  // Get product counts for each category and map to UI format
+  const categoriesWithCounts = await Promise.all(
+    (dbCategories || []).map(async (category) => {
+      // Count products in this category
+      const count = await prisma.product.count({
+        where: {
+          categoryId: category.id,
+        },
+      });
+
+      // Map database category to UI category
+      const uiCategory = mapDbCategoryToUiCategory(category);
+
+      return {
+        ...uiCategory,
+        count,
+      };
+    })
+  );
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">

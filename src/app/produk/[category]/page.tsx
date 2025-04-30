@@ -125,7 +125,7 @@ export default async function CategoryPage({
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ProductBreadcrumb category={categoryData.name} />
       <CategoryHeader
-        category={categoryData as any} // Type cast to avoid TypeScript errors
+        category={categoryData} // Now properly typed as UiCategory
       />
 
       {/* Filters and Sorting */}
@@ -142,7 +142,7 @@ export default async function CategoryPage({
       )}
 
       <OtherCategories
-        categories={allCategories as any} // Type cast to avoid TypeScript errors
+        categories={allCategories} // Now properly typed as UiCategory[]
         currentCategory={categoryData.name}
       />
       <BackToProducts />

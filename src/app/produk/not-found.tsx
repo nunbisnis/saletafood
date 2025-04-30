@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -8,15 +11,65 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Metadata } from "next";
-import { categories } from "@/data/categories";
+import { getCategories } from "@/actions/category-actions";
+import { mapDbCategoryToUiCategory } from "@/types/category";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Kategori Tidak Ditemukan - SaletaFood",
   description: "Kategori yang Anda cari tidak ditemukan di SaletaFood",
 };
 
-export default function CategoryNotFound() {
+export default async function CategoryNotFound() {
+  // Fetch categories from the database
+  const { categories: dbCategories } = await getCategories();
+
+  // Map database categories to UI categories
+  const categories =
+    dbCategories?.map((cat) => mapDbCategoryToUiCategory(cat)) || [];
+
+  // Function to render the appropriate icon
+  const renderIcon = (category: any) => {
+    if (
+      category.iconName &&
+      typeof category.iconName === "string" &&
+      LucideIcons[category.iconName as keyof typeof LucideIcons]
+    ) {
+      // If iconName exists and is a valid Lucide icon, render it
+      const IconComponent = LucideIcons[
+        category.iconName as keyof typeof LucideIcons
+      ] as React.ElementType;
+
+      return (
+        <IconComponent
+          className={cn(
+            "h-5 w-5 text-gradient bg-gradient-to-r",
+            category.color
+          )}
+        />
+      );
+    } else if (typeof category.icon === "function") {
+      // Fallback to icon function if available (for backward compatibility)
+      return (
+        <category.icon
+          className={cn(
+            "h-5 w-5 text-gradient bg-gradient-to-r",
+            category.color
+          )}
+        />
+      );
+    } else {
+      // Default fallback to ChevronRight if no valid icon is found
+      return (
+        <ChevronRight
+          className={cn(
+            "h-5 w-5 text-gradient bg-gradient-to-r",
+            category.color
+          )}
+        />
+      );
+    }
+  };
+
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
       <Card className="w-full max-w-md p-6 text-center">
@@ -44,13 +97,11 @@ export default function CategoryNotFound() {
             {categories.slice(0, 6).map((category) => (
               <Link
                 key={category.id}
-                href={`/produk/${category.name.toLowerCase()}`}
+                href={`/produk/${category.slug}`}
                 className="flex flex-col items-center p-2 rounded-lg hover:bg-muted transition-colors"
               >
                 <div className={`p-2 rounded-full ${category.bgColor} mb-2`}>
-                  <category.icon
-                    className={`h-5 w-5 text-gradient bg-gradient-to-r ${category.color}`}
-                  />
+                  {renderIcon(category)}
                 </div>
                 <span className="text-xs font-medium text-center">
                   {category.name}
