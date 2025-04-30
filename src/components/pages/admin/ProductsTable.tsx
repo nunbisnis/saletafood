@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./StatusBadge";
@@ -9,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+import { DeleteProductDialog } from "./DeleteProductDialog";
 
 // Define the product type
 type Product = {
@@ -25,6 +29,19 @@ interface ProductsTableProps {
 }
 
 export function ProductsTable({ products }: ProductsTableProps) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const handleDeleteClick = (product: Product) => {
+    setSelectedProduct(product);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <>
       {/* Desktop Table View */}
@@ -87,6 +104,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
                         variant="destructive"
                         size="sm"
                         className="flex items-center"
+                        onClick={() => handleDeleteClick(product)}
                       >
                         <Trash2 className="h-4 w-4 mr-1" />
                         <span>Hapus</span>
@@ -146,7 +164,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
                       <span>Edit</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600">
+                  <DropdownMenuItem
+                    className="text-red-600"
+                    onClick={() => handleDeleteClick(product)}
+                  >
                     <div className="flex items-center">
                       <Trash2 className="h-4 w-4 mr-2" />
                       <span>Hapus</span>
@@ -168,6 +189,16 @@ export function ProductsTable({ products }: ProductsTableProps) {
           </Card>
         ))}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {selectedProduct && (
+        <DeleteProductDialog
+          isOpen={deleteDialogOpen}
+          onClose={handleCloseDeleteDialog}
+          productId={selectedProduct.id.toString()}
+          productName={selectedProduct.name}
+        />
+      )}
     </>
   );
 }

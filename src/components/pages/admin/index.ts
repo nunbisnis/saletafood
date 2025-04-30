@@ -4,3 +4,4 @@ export { ProductsTable } from "./ProductsTable";
 export { ProductForm } from "./products/ProductForm";
 export { StatusBadge } from "./StatusBadge";
 export { DashboardActions } from "./DashboardActions";
+export { DeleteProductDialog } from "./DeleteProductDialog";

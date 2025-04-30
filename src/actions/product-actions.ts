@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { productSchema, type ProductFormData } from "@/lib/zod";
+import { del } from "@vercel/blob";
 
 export async function getProducts(limit?: number) {
   try {
@@ -175,6 +176,33 @@ export async function deleteProduct(id: string) {
     }
     */
 
+    // Delete images from Vercel Blob if they exist
+    if (product.images && product.images.length > 0) {
+      try {
+        // Process each image URL
+        for (const imageUrl of product.images) {
+          // Only delete images from Vercel Blob (not external URLs)
+          if (imageUrl.includes("vercel-blob.com")) {
+            try {
+              console.log(`Attempting to delete image: ${imageUrl}`);
+              await del(imageUrl);
+              console.log(`Successfully deleted image: ${imageUrl}`);
+            } catch (blobError) {
+              console.error(
+                `Failed to delete image from Blob: ${imageUrl}`,
+                blobError
+              );
+              // Continue with other images even if one fails
+            }
+          }
+        }
+      } catch (imageError) {
+        console.error("Error processing images for deletion:", imageError);
+        // Continue with product deletion even if image deletion fails
+      }
+    }
+
+    // Delete the product from the database
     await prisma.product.delete({
       where: { id },
     });
