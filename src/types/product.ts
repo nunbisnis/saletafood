@@ -6,8 +6,6 @@ export interface Product {
   price: number;
   images: string[];
   status: "AVAILABLE" | "OUT_OF_STOCK" | "LOW_STOCK";
-  rating?: number | null;
-  reviews?: number | null;
   slug: string;
   categoryId: string;
   furtherDetails: string[];

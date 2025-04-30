@@ -79,11 +79,6 @@ export default async function CategoryPage({
       case "name-desc":
         products = [...products].sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case "rating":
-        products = [...products].sort(
-          (a, b) => (b.rating || 0) - (a.rating || 0)
-        );
-        break;
       default:
         break;
     }

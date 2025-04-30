@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Star, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Product } from "@/data/products";
 
 interface ProductGridProps {
@@ -54,26 +54,6 @@ export function ProductGrid({ products }: ProductGridProps) {
                 {product.name}
               </CardTitle>
             </Link>
-
-            {product.rating && (
-              <div className="flex items-center mt-1 mb-2">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(product.rating || 0)
-                          ? "text-yellow-500 fill-yellow-500"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-muted-foreground ml-2">
-                  ({product.reviews} ulasan)
-                </span>
-              </div>
-            )}
 
             <CardDescription className="line-clamp-2 text-sm">
               {product.description}

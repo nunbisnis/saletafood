@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, Heart, Share2 } from "lucide-react";
+import { ShoppingCart, Heart, Share2 } from "lucide-react";
 import { Product } from "@/types/product";
 
 interface ProductInfoProps {
@@ -7,30 +7,9 @@ interface ProductInfoProps {
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
-  // Default rating value for consistency
-  const defaultRating = 0;
-
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-
-      <div className="flex items-center mb-4">
-        <div className="flex items-center">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`h-5 w-5 ${
-                i < Math.floor(product.rating || defaultRating)
-                  ? "text-yellow-500 fill-yellow-500"
-                  : "text-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-        <span className="text-sm text-muted-foreground ml-2">
-          ({product.reviews || 0} ulasan)
-        </span>
-      </div>
+      <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
 
       <p className="text-muted-foreground mb-6">{product.description}</p>
 

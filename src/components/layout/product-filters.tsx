@@ -13,46 +13,43 @@ import {
 export function ProductFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Get current filter and sort values from URL
   const currentFilter = searchParams.get("filter") || "all";
   const currentSort = searchParams.get("sort") || "default";
-  
+
   // Update URL with new filter value
   const handleFilterChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     if (value === "all") {
       params.delete("filter");
     } else {
       params.set("filter", value);
     }
-    
+
     router.push(`?${params.toString()}`);
   };
-  
+
   // Update URL with new sort value
   const handleSortChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     if (value === "default") {
       params.delete("sort");
     } else {
       params.set("sort", value);
     }
-    
+
     router.push(`?${params.toString()}`);
   };
-  
+
   return (
     <div className="flex flex-wrap gap-3">
       {/* Filter */}
       <div className="flex items-center">
         <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
-        <Select
-          defaultValue={currentFilter}
-          onValueChange={handleFilterChange}
-        >
+        <Select defaultValue={currentFilter} onValueChange={handleFilterChange}>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter" />
           </SelectTrigger>
@@ -64,14 +61,11 @@ export function ProductFilters() {
           </SelectContent>
         </Select>
       </div>
-      
+
       {/* Sort */}
       <div className="flex items-center">
         <SlidersHorizontal className="mr-2 h-4 w-4 text-muted-foreground" />
-        <Select
-          defaultValue={currentSort}
-          onValueChange={handleSortChange}
-        >
+        <Select defaultValue={currentSort} onValueChange={handleSortChange}>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Urutkan" />
           </SelectTrigger>
@@ -81,7 +75,6 @@ export function ProductFilters() {
             <SelectItem value="price-high">Harga: Tinggi ke Rendah</SelectItem>
             <SelectItem value="name-asc">Nama: A-Z</SelectItem>
             <SelectItem value="name-desc">Nama: Z-A</SelectItem>
-            <SelectItem value="rating">Rating Tertinggi</SelectItem>
           </SelectContent>
         </Select>
       </div>

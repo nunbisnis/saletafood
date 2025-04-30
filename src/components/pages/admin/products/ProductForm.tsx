@@ -751,34 +751,40 @@ export function ProductForm({
           <div className="space-y-4">
             <Label>Deskripsi Lebih Lanjut</Label>
             <div className="flex gap-2">
-              <Input
+              <textarea
                 id="newDetail"
                 name="newDetail"
                 placeholder="Tambahkan informasi tambahan tentang produk"
-                className="flex-1"
+                className="flex-1 min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <Button
-                type="button"
-                onClick={() => {
-                  const newDetail = (
-                    document.getElementById("newDetail") as HTMLInputElement
-                  ).value;
-                  if (newDetail.trim()) {
-                    setFormData({
-                      ...formData,
-                      furtherDetails: [
-                        ...(formData.furtherDetails || []),
-                        newDetail.trim(),
-                      ],
-                    });
-                    (
-                      document.getElementById("newDetail") as HTMLInputElement
-                    ).value = "";
-                  }
-                }}
-              >
-                Tambah
-              </Button>
+              <div className="flex flex-col justify-end">
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const newDetail = (
+                      document.getElementById(
+                        "newDetail"
+                      ) as HTMLTextAreaElement
+                    ).value;
+                    if (newDetail.trim()) {
+                      setFormData({
+                        ...formData,
+                        furtherDetails: [
+                          ...(formData.furtherDetails || []),
+                          newDetail.trim(),
+                        ],
+                      });
+                      (
+                        document.getElementById(
+                          "newDetail"
+                        ) as HTMLTextAreaElement
+                      ).value = "";
+                    }
+                  }}
+                >
+                  Tambah
+                </Button>
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">
               Tambahkan informasi lebih lanjut tentang produk ini (fitur,
@@ -822,6 +828,78 @@ export function ProductForm({
             ) : (
               <p className="text-sm text-muted-foreground mt-2">
                 Belum ada deskripsi lebih lanjut yang ditambahkan
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <Label>Tags</Label>
+            <div className="flex gap-2">
+              <Input
+                id="newTag"
+                name="newTag"
+                placeholder="Tambahkan tag untuk produk (contoh: Pedas, Ayam, Burger)"
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  const newTag = (
+                    document.getElementById("newTag") as HTMLInputElement
+                  ).value;
+                  if (newTag.trim()) {
+                    setFormData({
+                      ...formData,
+                      tags: [...(formData.tags || []), newTag.trim()],
+                    });
+                    (
+                      document.getElementById("newTag") as HTMLInputElement
+                    ).value = "";
+                  }
+                }}
+              >
+                Tambah
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Tambahkan tag untuk memudahkan pencarian produk
+            </p>
+
+            {formData.tags && formData.tags.length > 0 ? (
+              <div className="mt-2 border rounded-md p-4">
+                <h4 className="text-sm font-medium mb-2">
+                  Tags yang Ditambahkan:
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center group"
+                    >
+                      <span>{tag}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 ml-1 rounded-full"
+                        onClick={() => {
+                          const updatedTags = [...(formData.tags || [])];
+                          updatedTags.splice(index, 1);
+                          setFormData({
+                            ...formData,
+                            tags: updatedTags,
+                          });
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground mt-2">
+                Belum ada tag yang ditambahkan
               </p>
             )}
           </div>

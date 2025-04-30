@@ -40,8 +40,6 @@ model Product {
   price          Decimal       @db.Decimal(10, 2)
   images         String[]
   status         ProductStatus @default(AVAILABLE)
-  rating         Float?
-  reviews        Int?
   slug           String        @unique
   categoryId     String        @map("category_id")
   furtherDetails String[]      @map("further_details")
