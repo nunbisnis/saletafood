@@ -22,7 +22,7 @@ export function Footer() {
               </h3>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Makanan lezat diantar ke rumah Anda. Bahan segar, rasa luar biasa.
+              Supplier food and beverage for Hotel
             </p>
 
             {/* Social media icons */}

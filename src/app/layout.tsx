@@ -12,9 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SaletaFood - Makanan Lezat Diantar",
-  description:
-    "Pesan makanan lezat online dari SaletaFood. Bahan segar, rasa luar biasa.",
+  title: "SaletaFood - Welcome to SaletaFood",
+  description: "Supplier food and beverage for Hotel",
 };
 
 export default function RootLayout({

@@ -15,10 +15,10 @@ export function HeroSection() {
       />
       <div className="relative z-20 container mx-auto h-full flex flex-col justify-center items-center text-center text-white">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Makanan Lezat Diantar
+          Welcome to SaletaFood
         </h1>
         <p className="text-xl md:text-2xl mb-8 max-w-2xl">
-          Bahan segar, rasa luar biasa, diantar ke rumah Anda
+          Supplier food and beverage for Hotel
         </p>
         <div className="flex gap-4">
           <Button size="lg" asChild>
