@@ -7,7 +7,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import { ServerFlipCounter } from "@/components/visitor/server-flip-counter";
+import { VisitorCounter } from "../visitor/visitor-counter";
 
 export function Footer() {
   return (
@@ -57,7 +57,7 @@ export function Footer() {
             {/* Visitor Counter */}
             <div className="py-4 flex">
               <div className="w-full max-w-[200px]">
-                <ServerFlipCounter />
+                <VisitorCounter />
               </div>
             </div>
           </div>
