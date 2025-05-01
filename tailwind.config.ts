@@ -14,27 +14,6 @@ const config: Config = {
         "2xl": "6rem",
       },
     },
-    extend: {
-      keyframes: {
-        flipTop: {
-          "0%": { transform: "rotateX(0deg)", opacity: "1" },
-          "100%": { transform: "rotateX(-90deg)", opacity: "0" },
-        },
-        flipBottom: {
-          "0%": { transform: "rotateX(90deg)", opacity: "0" },
-          "100%": { transform: "rotateX(0deg)", opacity: "1" },
-        },
-        fadeOut: {
-          "0%": { opacity: "1" },
-          "100%": { opacity: "0" },
-        },
-      },
-      animation: {
-        flipTop: "flipTop 0.3s ease-in forwards",
-        flipBottom: "flipBottom 0.3s ease-out 0.3s forwards",
-        "fade-out": "fadeOut 0.3s ease-out forwards",
-      },
-    },
     screens: {
       sm: "640px",
       md: "768px",
@@ -69,6 +48,25 @@ const config: Config = {
       "9xl": ["8rem", { lineHeight: "1" }],
     },
     extend: {
+      keyframes: {
+        flipTop: {
+          "0%": { transform: "rotateX(0deg)", opacity: "1" },
+          "100%": { transform: "rotateX(-90deg)", opacity: "0" },
+        },
+        flipBottom: {
+          "0%": { transform: "rotateX(90deg)", opacity: "0" },
+          "100%": { transform: "rotateX(0deg)", opacity: "1" },
+        },
+        fadeOut: {
+          "0%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
+      },
+      animation: {
+        flipTop: "flipTop 0.3s ease-in forwards",
+        flipBottom: "flipBottom 0.3s ease-out 0.3s forwards",
+        "fade-out": "fadeOut 0.3s ease-out forwards",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
