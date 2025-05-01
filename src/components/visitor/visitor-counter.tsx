@@ -2,6 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
+import {
+  getVisitorCount,
+  incrementVisitorCount,
+} from "@/actions/visitor-actions";
+
+// Helper function to get client IP address
+async function getClientIp(): Promise<string> {
+  try {
+    // Try to get IP from a public API
+    const response = await fetch("https://api.ipify.org?format=json");
+    if (response.ok) {
+      const data = await response.json();
+      return data.ip;
+    }
+  } catch (error) {
+    console.error("Error getting client IP:", error);
+  }
+
+  // Fallback to a placeholder if we can't determine the IP
+  return "0.0.0.0";
+}
 
 export function VisitorCounter() {
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
@@ -12,29 +33,25 @@ export function VisitorCounter() {
       try {
         setLoading(true);
 
-        // Register this visit
-        const registerResponse = await fetch("/api/visitors", {
-          method: "POST",
-        });
+        // Get client IP address
+        const ipAddress = await getClientIp();
 
-        if (!registerResponse.ok) {
+        // Register this visit using server action
+        const result = await incrementVisitorCount(ipAddress);
+
+        if ("count" in result && typeof result.count === "number") {
+          setVisitorCount(result.count);
+        } else {
           throw new Error("Failed to register visit");
         }
-
-        const data = await registerResponse.json();
-        setVisitorCount(data.count);
       } catch (error) {
         console.error("Error with visitor tracking:", error);
 
         // Fallback to just getting the count if registration fails
         try {
-          const getResponse = await fetch("/api/visitors", {
-            method: "GET",
-          });
-
-          if (getResponse.ok) {
-            const data = await getResponse.json();
-            setVisitorCount(data.count);
+          const countResult = await getVisitorCount();
+          if ("count" in countResult && typeof countResult.count === "number") {
+            setVisitorCount(countResult.count);
           }
         } catch (fallbackError) {
           console.error("Fallback error:", fallbackError);
