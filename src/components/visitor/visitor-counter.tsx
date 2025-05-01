@@ -8,27 +8,43 @@ export function VisitorCounter() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchVisitorCount = async () => {
+    const registerVisitAndFetchCount = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/visitors", {
-          method: "GET",
+
+        // Register this visit
+        const registerResponse = await fetch("/api/visitors", {
+          method: "POST",
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch visitor count");
+        if (!registerResponse.ok) {
+          throw new Error("Failed to register visit");
         }
 
-        const data = await response.json();
+        const data = await registerResponse.json();
         setVisitorCount(data.count);
       } catch (error) {
-        console.error("Error fetching visitor count:", error);
+        console.error("Error with visitor tracking:", error);
+
+        // Fallback to just getting the count if registration fails
+        try {
+          const getResponse = await fetch("/api/visitors", {
+            method: "GET",
+          });
+
+          if (getResponse.ok) {
+            const data = await getResponse.json();
+            setVisitorCount(data.count);
+          }
+        } catch (fallbackError) {
+          console.error("Fallback error:", fallbackError);
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVisitorCount();
+    registerVisitAndFetchCount();
   }, []);
 
   return (
@@ -39,7 +55,7 @@ export function VisitorCounter() {
           "Menghitung pengunjung..."
         ) : visitorCount !== null ? (
           <>
-            Total Pengunjung:{" "}
+            Total Kunjungan:{" "}
             <span className="font-semibold">
               {visitorCount.toLocaleString()}
             </span>
