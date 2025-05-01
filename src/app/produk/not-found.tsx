@@ -26,7 +26,7 @@ export default async function CategoryNotFound() {
     dbCategories?.map((cat) => mapDbCategoryToUiCategory(cat)) || [];
 
   return (
-    <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
+    <div className="flex items-center justify-center py-12">
       <Card className="w-full max-w-md p-6 text-center">
         <CardHeader>
           <div className="relative h-48 w-full mb-6">

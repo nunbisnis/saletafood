@@ -10,7 +10,39 @@ const isCategoryProductRoute = createRouteMatcher(
   categories.map((cat) => `/${cat.name.toLowerCase()}/(.*)`)
 );
 
+// Define routes that should not increment visitor count
+const isApiOrStaticRoute = createRouteMatcher([
+  "/api/(.*)",
+  "/_next/(.*)",
+  "/favicon.ico",
+  "/(.*)\\.jpg",
+  "/(.*)\\.jpeg",
+  "/(.*)\\.png",
+  "/(.*)\\.gif",
+  "/(.*)\\.svg",
+  "/(.*)\\.ico",
+  "/(.*)\\.css",
+  "/(.*)\\.js",
+]);
+
 export default clerkMiddleware(async (auth, req) => {
+  // Increment visitor count for non-API, non-static routes
+  if (!isApiOrStaticRoute(req)) {
+    // Only count unique visits by checking cookies
+    const hasVisited = req.cookies.get("has_visited");
+
+    if (!hasVisited) {
+      try {
+        // Increment visitor count via API
+        await fetch(`${req.nextUrl.origin}/api/visitors`, {
+          method: "POST",
+        });
+      } catch (error) {
+        console.error("Error incrementing visitor count:", error);
+      }
+    }
+  }
+
   // Protect admin routes - require authentication
   if (isAdminRoute(req)) {
     try {
@@ -42,6 +74,18 @@ export default clerkMiddleware(async (auth, req) => {
       }
     }
   }
+
+  // Set a cookie to prevent counting the same visitor multiple times
+  const response = NextResponse.next();
+  if (!isApiOrStaticRoute(req) && !req.cookies.get("has_visited")) {
+    // Set cookie to expire in 24 hours
+    response.cookies.set("has_visited", "1", {
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    });
+  }
+
+  return response;
 });
 
 export const config = {

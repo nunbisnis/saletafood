@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
+    <div className="flex items-center justify-center py-12">
       <Card className="w-full max-w-md p-6 text-center">
         <CardHeader>
           <div className="relative h-48 w-full mb-6">
@@ -29,7 +35,8 @@ export default function NotFound() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-6">
-            Maaf, halaman yang Anda cari tidak dapat ditemukan. Mungkin halaman telah dipindahkan atau dihapus.
+            Maaf, halaman yang Anda cari tidak dapat ditemukan. Mungkin halaman
+            telah dipindahkan atau dihapus.
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">

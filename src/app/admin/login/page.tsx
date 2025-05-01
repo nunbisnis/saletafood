@@ -14,7 +14,7 @@ export default async function AdminLoginPage() {
 
   // If user is not authenticated, show login form
   return (
-    <div className="container flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
+    <div className="flex items-center justify-center py-12">
       <Card className="w-full max-w-md p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Login Admin</h1>
         <SignIn
