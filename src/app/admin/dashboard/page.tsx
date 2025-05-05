@@ -78,7 +78,7 @@ export default async function AdminDashboardPage() {
           <Button asChild>
             <a href="/admin/dashboard/settings" className="flex items-center">
               <Edit className="h-4 w-4 mr-2" />
-              Edit Hero Section
+              Edit Title Beranda
             </a>
           </Button>
         </div>

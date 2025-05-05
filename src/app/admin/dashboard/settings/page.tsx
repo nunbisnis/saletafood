@@ -4,7 +4,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { HeroSettingsForm } from "@/components/pages/admin/settings/HeroSettingsForm";
-import { getHeroSettings } from "@/actions/settings-actions";
+import { CTASettingsForm } from "@/components/pages/admin/settings/CTASettingsForm";
+import { getHeroSettings, getCTASettings } from "@/actions/settings-actions";
+import { Separator } from "@/components/ui/separator";
 
 export const metadata = {
   title: "Pengaturan Website - SaletaFood Admin",
@@ -20,8 +22,9 @@ export default async function SettingsPage() {
     redirect("/admin/login");
   }
 
-  // Fetch hero settings
+  // Fetch settings
   const heroSettings = await getHeroSettings();
+  const ctaSettings = await getCTASettings();
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -38,13 +41,24 @@ export default async function SettingsPage() {
           </h1>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-semibold mb-4">Hero Section</h2>
             <p className="text-sm text-muted-foreground mb-6">
               Kelola konten yang ditampilkan pada hero section di halaman utama.
             </p>
             <HeroSettingsForm initialData={heroSettings} />
+          </div>
+
+          <Separator />
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">CTA Section</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Kelola konten yang ditampilkan pada CTA (Call to Action) section
+              di halaman utama.
+            </p>
+            <CTASettingsForm initialData={ctaSettings} />
           </div>
         </div>
       </div>
