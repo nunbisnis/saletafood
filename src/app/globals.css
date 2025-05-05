@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@import "./rich-text.css";
 
 body {
   font-size: 16px; /* Default font size */

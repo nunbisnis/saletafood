@@ -19,9 +19,17 @@ import { editProduct } from "@/actions/edit-product-action";
 import { getCategories } from "@/actions/category-actions";
 import { productFormSchema } from "@/lib/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2, X, Image as ImageIcon } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  X,
+  Image as ImageIcon,
+  Edit,
+} from "lucide-react";
 import { uploadFile, validateImageFile } from "@/lib/upload-utils";
 import { formatIDR, parseIDR } from "@/lib/currency-utils";
+import { RichTextEditorWithPreview } from "@/components/ui/rich-text-editor-with-preview";
+import { HtmlContent } from "@/components/ui/html-content";
 
 type ProductFormData = {
   name: string;
@@ -33,6 +41,7 @@ type ProductFormData = {
   furtherDetails: string[];
   tags: string[];
   slug?: string;
+  currentDetail?: string; // Added for the rich text editor with live preview
 };
 
 type Category = {
@@ -90,6 +99,7 @@ export function ProductForm({
       categoryId: "",
       furtherDetails: [],
       tags: [],
+      currentDetail: "", // Initialize the current detail
     };
   });
 
@@ -344,6 +354,25 @@ export function ProductForm({
     setValidationErrors({});
 
     try {
+      // Check if there's any unsaved content in the rich text editor (currentDetail)
+      if (formData.currentDetail && formData.currentDetail.trim()) {
+        // Add the current content from the rich text editor to furtherDetails
+        const updatedFurtherDetails = [
+          ...(formData.furtherDetails || []),
+          formData.currentDetail.trim(),
+        ];
+
+        // Update formData with the new furtherDetails and clear currentDetail
+        setFormData((prev) => ({
+          ...prev,
+          furtherDetails: updatedFurtherDetails,
+          currentDetail: "",
+        }));
+
+        // Use the updated furtherDetails directly in the submission
+        formData.furtherDetails = updatedFurtherDetails;
+      }
+
       // Parse the formatted price
       const parsedPrice = parseIDR(formData.price || "0");
       console.log("Parsed price:", parsedPrice);
@@ -434,6 +463,7 @@ export function ProductForm({
             categoryId: "",
             furtherDetails: [],
             tags: [],
+            currentDetail: "", // Reset the current detail
           });
 
           // Redirect to dashboard after 2 seconds
@@ -759,85 +789,118 @@ export function ProductForm({
 
           <div className="space-y-4">
             <Label>Deskripsi Lebih Lanjut</Label>
-            <div className="flex gap-2">
-              <textarea
-                id="newDetail"
-                name="newDetail"
-                placeholder="Tambahkan informasi tambahan tentang produk"
-                className="flex-1 min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <div className="flex flex-col justify-end">
+            <div>
+              {/* State to track the current editor content */}
+              <div className="w-full mb-4">
+                <RichTextEditorWithPreview
+                  key={`editor-${formData.furtherDetails?.length || 0}`}
+                  value={formData.currentDetail || ""}
+                  onChange={(value) => {
+                    // Update the formData with the current editor content
+                    setFormData({
+                      ...formData,
+                      currentDetail: value,
+                    });
+                  }}
+                  placeholder="Tambahkan informasi tambahan tentang produk"
+                  minHeight="200px"
+                />
+              </div>
+
+              <div className="flex justify-end">
                 <Button
                   type="button"
                   onClick={() => {
-                    const newDetail = (
-                      document.getElementById(
-                        "newDetail"
-                      ) as HTMLTextAreaElement
-                    ).value;
-                    if (newDetail.trim()) {
+                    const currentDetail = formData.currentDetail;
+                    if (currentDetail && currentDetail.trim()) {
+                      // Add the current detail to the furtherDetails array
                       setFormData({
                         ...formData,
                         furtherDetails: [
                           ...(formData.furtherDetails || []),
-                          newDetail.trim(),
+                          currentDetail.trim(),
                         ],
+                        // Clear the current detail
+                        currentDetail: "",
                       });
-                      (
-                        document.getElementById(
-                          "newDetail"
-                        ) as HTMLTextAreaElement
-                      ).value = "";
                     }
                   }}
                 >
-                  Tambah
+                  Tambah ke Deskripsi
                 </Button>
               </div>
             </div>
+
             <p className="text-xs text-muted-foreground">
               Tambahkan informasi lebih lanjut tentang produk ini (fitur,
-              manfaat, dll.)
+              manfaat, dll.) dengan format teks yang lebih kaya.
             </p>
 
-            {formData.furtherDetails && formData.furtherDetails.length > 0 ? (
-              <div className="mt-2 border rounded-md p-4">
+            {formData.furtherDetails && formData.furtherDetails.length > 0 && (
+              <div className="mt-4 border rounded-md p-4">
                 <h4 className="text-sm font-medium mb-2">
                   Deskripsi yang Ditambahkan:
                 </h4>
-                <ul className="list-disc pl-5 space-y-1">
+                <div className="space-y-4">
                   {formData.furtherDetails.map((detail, index) => (
-                    <li
+                    <div
                       key={index}
-                      className="text-sm flex items-start justify-between group"
+                      className="border-b pb-3 last:border-b-0 last:pb-0"
                     >
-                      <span className="flex-1">{detail}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 opacity-0 group-hover:opacity-100"
-                        onClick={() => {
-                          const updatedDetails = [
-                            ...(formData.furtherDetails || []),
-                          ];
-                          updatedDetails.splice(index, 1);
-                          setFormData({
-                            ...formData,
-                            furtherDetails: updatedDetails,
-                          });
-                        }}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </li>
+                      <div className="flex items-start justify-between group">
+                        <div className="flex-1 prose prose-sm max-w-none">
+                          <HtmlContent html={detail} />
+                        </div>
+                        <div className="flex gap-1 ml-2 shrink-0">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 opacity-0 group-hover:opacity-100"
+                            onClick={() => {
+                              // Set the current detail to the selected one for editing
+                              setFormData({
+                                ...formData,
+                                currentDetail: detail,
+                              });
+
+                              // Remove it from the furtherDetails array
+                              const updatedDetails = [
+                                ...(formData.furtherDetails || []),
+                              ];
+                              updatedDetails.splice(index, 1);
+                              setFormData((prev) => ({
+                                ...prev,
+                                furtherDetails: updatedDetails,
+                              }));
+                            }}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 opacity-0 group-hover:opacity-100"
+                            onClick={() => {
+                              const updatedDetails = [
+                                ...(formData.furtherDetails || []),
+                              ];
+                              updatedDetails.splice(index, 1);
+                              setFormData({
+                                ...formData,
+                                furtherDetails: updatedDetails,
+                              });
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground mt-2">
-                Belum ada deskripsi lebih lanjut yang ditambahkan
-              </p>
             )}
           </div>
 
