@@ -72,6 +72,7 @@ export default async function CategoryPage({
     productsResult.products = [];
   }
 
+  // Ensure we have a valid products array, even if empty
   let products = productsResult.products || [];
 
   // Get search params

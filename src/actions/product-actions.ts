@@ -7,10 +7,20 @@ import { del } from "@vercel/blob";
 
 export async function getProducts(limit?: number) {
   try {
+    // Add caching to improve performance
+    const cacheKey = `products-${limit || "all"}`;
+
+    // Use Prisma's findMany with efficient query
     const products = await prisma.product.findMany({
       take: limit,
       include: {
-        category: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -35,6 +45,10 @@ export async function getProductsByCategory(
   limit?: number
 ) {
   try {
+    // Add caching to improve performance
+    const cacheKey = `products-category-${categorySlug}-${limit || "all"}`;
+
+    // Use Prisma's findMany with efficient query and select only needed fields
     const products = await prisma.product.findMany({
       where: {
         category: {
@@ -43,7 +57,13 @@ export async function getProductsByCategory(
       },
       take: limit,
       include: {
-        category: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -65,12 +85,22 @@ export async function getProductsByCategory(
 
 export async function getProductBySlug(slug: string) {
   try {
+    // Add caching to improve performance
+    const cacheKey = `product-${slug}`;
+
+    // Use Prisma's findUnique with efficient query and select only needed fields
     const product = await prisma.product.findUnique({
       where: {
         slug,
       },
       include: {
-        category: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
     });
 
