@@ -20,7 +20,7 @@ export function Footer() {
           <div className="md:w-1/3 space-y-4">
             <Link href="/" className="inline-block">
               <Image
-                src="/saletafood-logo-nav.png"
+                src="/saletafood-logo-nav2.png"
                 alt="SaletaFood Logo"
                 width={150}
                 height={40}

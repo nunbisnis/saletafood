@@ -16,7 +16,7 @@ export function Navbar() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/saletafood-logo-nav.png"
+                src="/saletafood-logo-nav2.png"
                 alt="SaletaFood Logo"
                 width={150}
                 height={40}
