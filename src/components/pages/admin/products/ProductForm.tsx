@@ -259,8 +259,8 @@ export function ProductForm({
         // Update progress
         setUploadProgress(Math.round((i / files.length) * 50));
 
-        // Upload the file
-        const imageUrl = await uploadFile(file);
+        // Upload the file to the products folder
+        const imageUrl = await uploadFile(file, "products");
 
         // Add the URL to the form data
         setFormData((prev) => ({

@@ -134,8 +134,8 @@ export function CategoryForm({
       // Update progress
       setUploadProgress(50);
 
-      // Upload the file
-      const imageUrl = await uploadFile(file);
+      // Upload the file to the categories folder
+      const imageUrl = await uploadFile(file, "categories");
 
       // Add the URL to the form data
       setFormData((prev) => ({

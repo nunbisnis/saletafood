@@ -1,27 +1,33 @@
 /**
  * Uploads a file to the server using the upload API
  * @param file The file to upload
+ * @param folder Optional folder path to organize files (e.g., 'products', 'categories')
  * @returns The URL of the uploaded file
  */
-export async function uploadFile(file: File): Promise<string> {
+export async function uploadFile(file: File, folder?: string): Promise<string> {
   try {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    const response = await fetch('/api/upload', {
-      method: 'POST',
+    // Add folder information if provided
+    if (folder) {
+      formData.append("folder", folder);
+    }
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
       body: formData,
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || 'Failed to upload file');
+      throw new Error(error.error || "Failed to upload file");
     }
 
     const data = await response.json();
     return data.url;
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error("Error uploading file:", error);
     throw error;
   }
 }
@@ -34,8 +40,8 @@ export async function uploadFile(file: File): Promise<string> {
  */
 export function validateImageFile(file: File, maxSizeMB = 5): string | null {
   // Check if file is an image
-  if (!file.type.startsWith('image/')) {
-    return 'File harus berupa gambar (JPG, PNG, GIF, dll)';
+  if (!file.type.startsWith("image/")) {
+    return "File harus berupa gambar (JPG, PNG, GIF, dll)";
   }
 
   // Check file size (convert MB to bytes)
