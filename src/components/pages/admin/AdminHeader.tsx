@@ -53,7 +53,7 @@ export function AdminHeader() {
           <Link href="/admin/dashboard" className="flex items-center space-x-2">
             <div className="flex items-center">
               <Image
-                src="/saletafood-logo-nav2.png"
+                src="/saletafood-logo-nav3.png"
                 alt="SaletaFood Logo"
                 width={120}
                 height={30}
