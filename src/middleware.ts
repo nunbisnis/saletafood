@@ -3,7 +3,15 @@ import { NextResponse } from "next/server";
 import { categories } from "@/data/categories";
 
 // Define admin routes that require authentication
-const isAdminRoute = createRouteMatcher(["/admin/dashboard(.*)"]);
+const isAdminRoute = createRouteMatcher([
+  "/admin/dashboard(.*)",
+  "/admin/settings(.*)",
+  "/admin/products(.*)",
+  "/admin/categories(.*)",
+]);
+
+// Define admin login route
+const isAdminLoginRoute = createRouteMatcher(["/admin/login"]);
 
 // Define product category routes
 const isCategoryProductRoute = createRouteMatcher(
@@ -52,6 +60,20 @@ export default clerkMiddleware(async (auth, req) => {
       // If auth.protect() throws an error, redirect to our custom login page
       const loginUrl = new URL("/admin/login", req.url);
       return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Handle admin login route - redirect to dashboard if already authenticated
+  if (isAdminLoginRoute(req)) {
+    try {
+      // Try to protect the route - if this doesn't throw, the user is authenticated
+      await auth.protect();
+
+      // If we get here, the user is authenticated, so redirect to dashboard
+      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    } catch (error) {
+      // If auth.protect() throws an error, the user is not authenticated
+      // Just continue to the login page
     }
   }
 

@@ -2,6 +2,7 @@ import { SignIn } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { LoginRedirect } from "@/components/pages/admin";
 
 export default async function AdminLoginPage() {
   // Check if user is already authenticated
@@ -15,6 +16,9 @@ export default async function AdminLoginPage() {
   // If user is not authenticated, show login form
   return (
     <div className="flex items-center justify-center py-12">
+      {/* Client-side redirect component */}
+      <LoginRedirect />
+
       <Card className="w-full max-w-md p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Login Admin</h1>
         <SignIn
@@ -30,7 +34,7 @@ export default async function AdminLoginPage() {
           }}
           routing="path"
           path="/admin/login"
-          forceRedirectUrl="/admin/dashboard"
+          signUpUrl="/admin/login" // Redirect sign up attempts back to login
         />
       </Card>
     </div>
