@@ -9,6 +9,9 @@ import {
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+import * as HiIcons from "react-icons/hi";
+import * as HiIcons2 from "react-icons/hi2";
+import * as RiIcons from "react-icons/ri";
 import { cn } from "./utils";
 
 // Parse the icon name to determine its type and name
@@ -76,11 +79,35 @@ export function renderIcon(
   }
 
   // Handle Font Awesome icons
-  if (type.startsWith("fa-")) {
+  if (type?.startsWith("fa-")) {
     const faIcon = getFontAwesomeIcon(name, type);
     if (faIcon) {
       return <FontAwesomeIcon icon={faIcon} className={className} />;
     }
+  }
+
+  // Handle Heroicons (v1)
+  if (type === "heroicons" && HiIcons[name as keyof typeof HiIcons]) {
+    const IconComponent = HiIcons[
+      name as keyof typeof HiIcons
+    ] as React.ElementType;
+    return <IconComponent className={className} />;
+  }
+
+  // Handle Heroicons v2
+  if (type === "heroicons2" && HiIcons2[name as keyof typeof HiIcons2]) {
+    const IconComponent = HiIcons2[
+      name as keyof typeof HiIcons2
+    ] as React.ElementType;
+    return <IconComponent className={className} />;
+  }
+
+  // Handle Remix Icons
+  if (type === "remix" && RiIcons[name as keyof typeof RiIcons]) {
+    const IconComponent = RiIcons[
+      name as keyof typeof RiIcons
+    ] as React.ElementType;
+    return <IconComponent className={className} />;
   }
 
   // If we get here, the icon wasn't found
@@ -114,7 +141,7 @@ export function renderCategoryIcon(
       }
 
       // Handle Font Awesome icons
-      if (type.startsWith("fa-")) {
+      if (type?.startsWith("fa-")) {
         const faIcon = getFontAwesomeIcon(name, type);
         if (faIcon) {
           return (
@@ -128,6 +155,54 @@ export function renderCategoryIcon(
             />
           );
         }
+      }
+
+      // Handle Heroicons (v1)
+      if (type === "heroicons" && HiIcons[name as keyof typeof HiIcons]) {
+        const IconComponent = HiIcons[
+          name as keyof typeof HiIcons
+        ] as React.ElementType;
+        return (
+          <IconComponent
+            className={cn(
+              className,
+              "text-gradient bg-gradient-to-r",
+              category.color
+            )}
+          />
+        );
+      }
+
+      // Handle Heroicons v2
+      if (type === "heroicons2" && HiIcons2[name as keyof typeof HiIcons2]) {
+        const IconComponent = HiIcons2[
+          name as keyof typeof HiIcons2
+        ] as React.ElementType;
+        return (
+          <IconComponent
+            className={cn(
+              className,
+              "text-gradient bg-gradient-to-r",
+              category.color
+            )}
+          />
+        );
+      }
+
+      // Handle Remix Icons
+      if (type === "remix" && RiIcons[name as keyof typeof RiIcons]) {
+        const IconComponent = RiIcons[
+          name as keyof typeof RiIcons
+        ] as React.ElementType;
+        return (
+          <IconComponent
+            className={cn(
+              className,
+              "text-gradient bg-gradient-to-r",
+              category.color
+            )}
+          />
+        );
       }
     }
   }
