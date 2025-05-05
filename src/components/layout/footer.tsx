@@ -114,7 +114,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/privacy"
+                    href="/#"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
                     Kebijakan Privasi
@@ -122,7 +122,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/terms"
+                    href="/#"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
                     Syarat Layanan
@@ -130,7 +130,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/cookies"
+                    href="/#"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
                     Kebijakan Cookie
