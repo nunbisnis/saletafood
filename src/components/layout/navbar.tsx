@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -47,13 +46,13 @@ export function Navbar() {
               Kategori
             </Link>
             <Link
-              href="/about"
+              href="/tentang-kami"
               className="text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
             >
               Tentang Kami
             </Link>
             <Link
-              href="/contact"
+              href="/kontak"
               className="text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
             >
               Kontak
@@ -158,14 +157,14 @@ export function Navbar() {
                 Kategori
               </Link>
               <Link
-                href="/about"
+                href="/tentang-kami"
                 className="text-base font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Tentang Kami
               </Link>
               <Link
-                href="/contact"
+                href="/kontak"
                 className="text-base font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >

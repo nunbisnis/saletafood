@@ -91,7 +91,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/about"
+                    href="/tentang-kami"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
                     Tentang Kami
@@ -99,7 +99,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/contact"
+                    href="/kontak"
                     className="text-muted-foreground hover:text-orange-500 transition-colors"
                   >
                     Kontak
