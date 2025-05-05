@@ -33,10 +33,15 @@ export function AdminHeader() {
       icon: TagsIcon,
       active: false,
     },
+    {
+      href: "/admin/dashboard/settings",
+      label: "Pengaturan",
+      icon: Settings,
+      active: false,
+    },
     // { href: "/admin/dashboard/products", label: "Produk", icon: Package },
     // { href: "/admin/dashboard/orders", label: "Pesanan", icon: ShoppingCart },
     // { href: "/admin/dashboard/customers", label: "Pelanggan", icon: Users },
-    // { href: "/admin/dashboard/settings", label: "Pengaturan", icon: Settings },
   ];
 
   return (

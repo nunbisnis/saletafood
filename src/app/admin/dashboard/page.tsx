@@ -7,6 +7,7 @@ import {
 } from "@/components/pages/admin";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/actions/product-actions";
+import { Edit } from "lucide-react";
 
 // Function to map database product status to UI status
 function mapProductStatus(status: string): string {
@@ -62,6 +63,26 @@ export default async function AdminDashboardPage() {
 
       {/* Stats Cards */}
       <DashboardStats products={products} />
+
+      {/* Website Settings Section */}
+      <div className="bg-card rounded-lg border p-4 md:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold">
+              Pengaturan Website
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              Kelola konten dan tampilan website
+            </p>
+          </div>
+          <Button asChild>
+            <a href="/admin/dashboard/settings" className="flex items-center">
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Hero Section
+            </a>
+          </Button>
+        </div>
+      </div>
 
       {/* Products Section */}
       <div className="bg-card rounded-lg border p-4 md:p-6 mb-6">

@@ -1,25 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getHeroSettings } from "@/actions/settings-actions";
 
-export function HeroSection() {
+export async function HeroSection() {
+  // Fetch hero settings from the database
+  const { title, description, imageUrl } = await getHeroSettings();
+
   return (
     <section className="relative h-[500px] w-full">
       <div className="absolute inset-0 bg-black/50 z-10" />
       <Image
-        src="https://cdn.pixabay.com/photo/2017/04/04/01/08/fruits-2200001_1280.jpg"
-        alt="Makanan Lezat"
+        src={imageUrl}
+        alt="SaletaFood Hero"
         fill
         className="object-cover"
         priority
       />
       <div className="relative z-20 container mx-auto h-full flex flex-col justify-center items-center text-center text-white">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Welcome to SaletaFood
-        </h1>
-        <p className="text-xl md:text-2xl mb-8 max-w-2xl">
-          Supplier food and beverage for Hotel
-        </p>
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">{title}</h1>
+        <p className="text-xl md:text-2xl mb-8 max-w-2xl">{description}</p>
         <div className="flex gap-4">
           <Button size="lg" asChild>
             <Link

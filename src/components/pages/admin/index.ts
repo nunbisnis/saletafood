@@ -9,3 +9,4 @@ export { CategoriesTable } from "./CategoriesTable";
 export { DeleteCategoryDialog } from "./DeleteCategoryDialog";
 export { CategoryForm } from "./categories/CategoryForm";
 export { IconSelector } from "./categories/IconSelector";
+export { HeroSettingsForm } from "./settings/HeroSettingsForm";

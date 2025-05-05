@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, RefreshCcw, TagsIcon } from "lucide-react";
+import { PlusCircle, RefreshCcw, TagsIcon, Settings } from "lucide-react";
 
 export function DashboardActions() {
   const router = useRouter();
@@ -57,6 +57,20 @@ export function DashboardActions() {
         >
           <TagsIcon className="h-4 w-4 mr-2" />
           <span>Kelola Kategori</span>
+        </Link>
+      </Button>
+      <Button
+        size="sm"
+        variant="outline"
+        className="flex-1 sm:flex-none"
+        asChild
+      >
+        <Link
+          href="/admin/dashboard/settings"
+          className="flex items-center justify-center"
+        >
+          <Settings className="h-4 w-4 mr-2" />
+          <span>Pengaturan</span>
         </Link>
       </Button>
     </div>
