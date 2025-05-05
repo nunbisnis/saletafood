@@ -61,20 +61,16 @@ export function ProductGrid({ products }: ProductGridProps) {
           </CardHeader>
 
           <CardFooter className="flex justify-between pt-0">
-            <span className="text-lg font-bold text-primary">
-              {product.price === 0 ? (
-                <span>
-                  Rp. <span className="underline">Negotiation</span>
-                </span>
-              ) : (
-                new Intl.NumberFormat("id-ID", {
+            {product.price !== 0 && (
+              <span className="text-lg font-bold text-primary">
+                {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 0,
-                }).format(product.price)
-              )}
-            </span>
+                }).format(product.price)}
+              </span>
+            )}
             <Button
               size="sm"
               className="gap-1"

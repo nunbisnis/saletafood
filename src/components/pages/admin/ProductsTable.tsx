@@ -83,12 +83,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
                   </td>
                   <td className="px-4 py-3 text-sm">{product.slug}</td>
                   <td className="px-4 py-3 text-sm">
-                    {product.price === 0 ? (
-                      <span>
-                        Rp. <span className="underline">Negotiation</span>
-                      </span>
-                    ) : (
+                    {product.price !== 0 ? (
                       `Rp${product.price.toLocaleString("id-ID")}`
+                    ) : (
+                      <span className="text-muted-foreground italic">-</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-sm">{product.category}</td>
@@ -149,12 +147,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
               <div>
                 <p className="text-muted-foreground">Slug: {product.slug}</p>
                 <p className="font-medium">
-                  {product.price === 0 ? (
-                    <span>
-                      Rp. <span className="underline">Negotiation</span>
-                    </span>
-                  ) : (
+                  {product.price !== 0 ? (
                     `Rp${product.price.toLocaleString("id-ID")}`
+                  ) : (
+                    <span className="text-muted-foreground italic">-</span>
                   )}
                 </p>
               </div>

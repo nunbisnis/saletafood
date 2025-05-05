@@ -15,15 +15,11 @@ export function ProductInfo({ product }: ProductInfoProps) {
       <p className="text-muted-foreground mb-6">{product.description}</p>
 
       <div className="flex items-center mb-8">
-        <span className="text-3xl font-bold text-primary mr-4">
-          {product.price === 0 ? (
-            <span>
-              Rp. <span className="underline">Negotiation</span>
-            </span>
-          ) : (
-            `Rp${product.price.toLocaleString("id-ID")}`
-          )}
-        </span>
+        {product.price !== 0 && (
+          <span className="text-3xl font-bold text-primary mr-4">
+            {`Rp${product.price.toLocaleString("id-ID")}`}
+          </span>
+        )}
         {product.status === "AVAILABLE" && (
           <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
             Tersedia
