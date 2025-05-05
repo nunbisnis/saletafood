@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import {
   Menu,
@@ -49,8 +50,17 @@ export function AdminHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold">SaletaFood Admin</span>
+          <Link href="/admin/dashboard" className="flex items-center space-x-2">
+            <div className="flex items-center">
+              <Image
+                src="/saletafood-logo-nav.png"
+                alt="SaletaFood Logo"
+                width={120}
+                height={30}
+                className="h-8 w-auto"
+              />
+              <span className="ml-2 font-bold">Admin</span>
+            </div>
           </Link>
         </div>
 

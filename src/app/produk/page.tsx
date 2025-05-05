@@ -51,7 +51,6 @@ export default async function ProdukPage() {
       <ProductHero />
       <AllProductsGrid products={dbProducts || []} />
       <FeaturedCategories />
-      <PromoBanner />
       <QuickLinks categories={categoriesWithCounts} />
     </div>
   );

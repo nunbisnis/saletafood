@@ -15,9 +15,14 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
-                SaletaFood
-              </span>
+              <Image
+                src="/saletafood-logo-nav.png"
+                alt="SaletaFood Logo"
+                width={150}
+                height={40}
+                className="h-10 w-auto"
+                priority
+              />
             </Link>
           </div>
 

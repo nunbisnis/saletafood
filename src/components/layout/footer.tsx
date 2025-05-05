@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Instagram,
   Facebook,
@@ -18,9 +19,13 @@ export function Footer() {
           {/* Brand and description */}
           <div className="md:w-1/3 space-y-4">
             <Link href="/" className="inline-block">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
-                SaletaFood
-              </h3>
+              <Image
+                src="/saletafood-logo-nav.png"
+                alt="SaletaFood Logo"
+                width={150}
+                height={40}
+                className="h-10 w-auto"
+              />
             </Link>
             <p className="text-sm text-muted-foreground">
               Supplier food and beverage for Hotel
