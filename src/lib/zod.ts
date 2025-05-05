@@ -7,7 +7,7 @@ export const productSchema = z.object({
     .string()
     .min(1, "Description is required")
     .max(300, "Description must be at most 300 characters"),
-  price: z.coerce.number().positive("Price must be positive"),
+  price: z.coerce.number().min(0, "Price must be zero or positive"),
   images: z
     .array(z.string().url("Must be a valid URL"))
     .min(1, "At least one image is required"),
@@ -28,7 +28,7 @@ export const productFormSchema = z.object({
     .string()
     .min(1, "Deskripsi produk harus diisi")
     .max(300, "Deskripsi produk maksimal 300 karakter"),
-  price: z.string().min(1, "Harga produk harus diisi"),
+  price: z.string().min(0, "Harga produk harus diisi"),
   images: z
     .array(z.string().url("URL gambar tidak valid"))
     .min(1, "Minimal satu gambar harus diisi"),
@@ -74,13 +74,13 @@ export const userSchema = z.object({
 export const orderItemSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
   quantity: z.number().int().positive("Quantity must be positive"),
-  price: z.number().positive("Price must be positive"),
+  price: z.number().min(0, "Price must be zero or positive"),
 });
 
 export const orderSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
   status: z.enum(["PENDING", "PROCESSING", "COMPLETED", "CANCELLED"]),
-  total: z.number().positive("Total must be positive"),
+  total: z.number().min(0, "Total must be zero or positive"),
   items: z.array(orderItemSchema),
 });
 

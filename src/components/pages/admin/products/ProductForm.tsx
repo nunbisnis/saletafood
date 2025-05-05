@@ -177,10 +177,10 @@ export function ProductForm({
           });
         }
       } else {
-        // If empty, set empty string
+        // If empty, set to "0" to support zero price
         setFormData({
           ...formData,
-          [name]: "",
+          [name]: "0",
         });
       }
     } else {
@@ -380,7 +380,7 @@ export function ProductForm({
       // Prepare the data for client-side validation
       const validationData = {
         ...(formData as ProductFormData),
-        price: formData.price || "0", // Keep as string for client validation
+        price: formData.price === "" ? "0" : formData.price || "0", // Handle empty string as "0" for client validation
         slug: formData.slug || generateSlug(formData.name || ""),
         furtherDetails: formData.furtherDetails || [],
         tags: formData.tags || [],
@@ -571,7 +571,7 @@ export function ProductForm({
                   id="price"
                   name="price"
                   type="text"
-                  placeholder="Contoh: 100.000"
+                  placeholder="Contoh: 100.000 atau 0"
                   value={formData.price || ""}
                   onChange={handleChange}
                   className={`pl-10 ${
@@ -580,7 +580,7 @@ export function ProductForm({
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                {/* Format: Rp 200.000 (tanpa desimal) */}
+                Format: Rp 200.000 (tanpa desimal) atau Rp 0
               </p>
               {validationErrors.price && (
                 <p className="text-red-500 text-xs mt-1">
