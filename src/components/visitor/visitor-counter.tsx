@@ -2,66 +2,39 @@
 
 import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
-import {
-  getVisitorCount,
-  incrementVisitorCount,
-} from "@/actions/visitor-actions";
-
-// Helper function to get client IP address
-async function getClientIp(): Promise<string> {
-  try {
-    // Try to get IP from a public API
-    const response = await fetch("https://api.ipify.org?format=json");
-    if (response.ok) {
-      const data = await response.json();
-      return data.ip;
-    }
-  } catch (error) {
-    console.error("Error getting client IP:", error);
-  }
-
-  // Fallback to a placeholder if we can't determine the IP
-  return "0.0.0.0";
-}
+import { getVisitorCount } from "@/actions/visitor-actions";
 
 export function VisitorCounter() {
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const registerVisitAndFetchCount = async () => {
+    const fetchVisitorCount = async () => {
       try {
         setLoading(true);
 
-        // Get client IP address
-        const ipAddress = await getClientIp();
+        // Just fetch the current count without trying to increment
+        const countResult = await getVisitorCount();
 
-        // Register this visit using server action
-        const result = await incrementVisitorCount(ipAddress);
-
-        if ("count" in result && typeof result.count === "number") {
-          setVisitorCount(result.count);
+        if ("count" in countResult && typeof countResult.count === "number") {
+          setVisitorCount(countResult.count);
         } else {
-          throw new Error("Failed to register visit");
+          console.error("Invalid visitor count response:", countResult);
         }
       } catch (error) {
-        console.error("Error with visitor tracking:", error);
-
-        // Fallback to just getting the count if registration fails
-        try {
-          const countResult = await getVisitorCount();
-          if ("count" in countResult && typeof countResult.count === "number") {
-            setVisitorCount(countResult.count);
-          }
-        } catch (fallbackError) {
-          console.error("Fallback error:", fallbackError);
-        }
+        console.error("Error fetching visitor count:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    registerVisitAndFetchCount();
+    fetchVisitorCount();
+
+    // Set up an interval to refresh the count every minute
+    const intervalId = setInterval(fetchVisitorCount, 60000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
