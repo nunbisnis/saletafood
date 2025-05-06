@@ -19,9 +19,7 @@ export default function AboutPage() {
       {/* Page Header */}
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-bold mb-4">Tentang Kami</h1>
-        <p className="text-muted-foreground max-w-3xl mx-auto">
-          Menghubungkan produsen lokal dengan pasar domestik dan internasional
-        </p>
+        <p className="text-muted-foreground max-w-3xl mx-auto"></p>
       </div>
 
       {/* Main Content */}
