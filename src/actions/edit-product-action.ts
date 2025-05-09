@@ -45,6 +45,7 @@ export async function editProduct(id: string, formData: ProductFormData) {
     revalidatePath("/admin/dashboard/products");
     revalidatePath(`/produk/${product.slug}`);
     revalidatePath("/produk");
+    revalidatePath("/");
 
     return { success: true, product: serializedProduct };
   } catch (error) {

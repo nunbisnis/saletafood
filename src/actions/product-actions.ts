@@ -165,6 +165,7 @@ export async function createProduct(formData: ProductFormData) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/produk");
+    revalidatePath("/");
 
     return { success: true, product: serializedProduct };
   } catch (error) {
@@ -239,6 +240,7 @@ export async function deleteProduct(id: string) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/produk");
+    revalidatePath("/");
 
     return { success: true };
   } catch (error) {

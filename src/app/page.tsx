@@ -8,7 +8,7 @@ import { getProducts } from "@/actions/product-actions";
 
 export default async function Home() {
   // Fetch products from the database
-  const { products: dbProducts } = await getProducts(8);
+  const { products: dbProducts } = await getProducts();
 
   return (
     <div className="flex flex-col min-h-screen ">
