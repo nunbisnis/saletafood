@@ -65,6 +65,7 @@ model Product {
   categoryId     String        @map("category_id")
   furtherDetails String[]      @map("further_details")
   tags           String[]
+  viewCount      Int           @default(0) @map("view_count")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   category       Category      @relation(fields: [categoryId], references: [id])

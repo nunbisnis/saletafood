@@ -7,8 +7,6 @@ import {
   ProductBreadcrumb,
   ProductHero,
   AllProductsGrid,
-  FeaturedCategories,
-  PromoBanner,
   QuickLinks,
 } from "@/components/pages/produk";
 
@@ -18,9 +16,16 @@ export const metadata: Metadata = {
     "Jelajahi produk lengkap kami dengan berbagai pilihan makanan dan minuman lezat",
 };
 
-export default async function ProdukPage() {
-  // Fetch products from the database
-  const { products: dbProducts } = await getProducts();
+export default async function ProdukPage({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
+  // Get search query from URL if it exists
+  const searchQuery = searchParams.search || "";
+
+  // Fetch products from the database with search parameter
+  const { products: dbProducts } = await getProducts(undefined, searchQuery);
 
   // Fetch categories from the database
   const { categories: dbCategories } = await getCategories();
@@ -50,7 +55,6 @@ export default async function ProdukPage() {
       <ProductBreadcrumb />
       <ProductHero />
       <AllProductsGrid products={dbProducts || []} />
-      <FeaturedCategories />
       <QuickLinks categories={categoriesWithCounts} />
     </div>
   );

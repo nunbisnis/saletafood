@@ -3,6 +3,7 @@ export { ProductHero } from "./ProductHero";
 export { CategoryGrid } from "./CategoryGrid";
 export { AllProductsGrid } from "./AllProductsGrid";
 export { FeaturedCategories } from "./FeaturedCategories";
+export { PopularProducts } from "./PopularProducts";
 export { PromoBanner } from "./PromoBanner";
 export { QuickLinks } from "./QuickLinks";
 export { CategoryHeader } from "./CategoryHeader";

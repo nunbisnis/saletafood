@@ -38,7 +38,8 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { product, error } = await getProductBySlug(slug);
+  // Pass true to increment the view count when fetching the product
+  const { product, error } = await getProductBySlug(slug, true);
 
   if (error || !product) {
     notFound();

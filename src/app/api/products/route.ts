@@ -8,13 +8,14 @@ export async function GET(request: Request) {
       ? parseInt(searchParams.get("limit")!)
       : undefined;
     const categorySlug = searchParams.get("category");
+    const searchQuery = searchParams.get("search") || undefined;
 
     let result;
 
     if (categorySlug) {
       result = await getProductsByCategory(categorySlug, limit);
     } else {
-      result = await getProducts(limit);
+      result = await getProducts(limit, searchQuery);
     }
 
     if ("error" in result) {

@@ -5,13 +5,25 @@ import { revalidatePath } from "next/cache";
 import { productSchema, type ProductFormData } from "@/lib/zod";
 import { del } from "@vercel/blob";
 
-export async function getProducts(limit?: number) {
+export async function getProducts(limit?: number, search?: string) {
   try {
     // Add caching to improve performance
-    const cacheKey = `products-${limit || "all"}`;
+    const cacheKey = `products-${limit || "all"}-${search || ""}`;
+
+    // Build where clause based on search parameter
+    const whereClause: any = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { description: { contains: search, mode: "insensitive" } },
+            { tags: { has: search } },
+          ],
+        }
+      : undefined;
 
     // Use Prisma's findMany with efficient query
     const products = await prisma.product.findMany({
+      where: whereClause,
       take: limit,
       include: {
         category: {
@@ -83,7 +95,10 @@ export async function getProductsByCategory(
   }
 }
 
-export async function getProductBySlug(slug: string) {
+export async function getProductBySlug(
+  slug: string,
+  incrementView: boolean = false
+) {
   try {
     // Add caching to improve performance
     const cacheKey = `product-${slug}`;
@@ -108,16 +123,109 @@ export async function getProductBySlug(slug: string) {
       return { error: "Product not found" };
     }
 
+    // Increment view count if requested
+    if (incrementView) {
+      await incrementProductViewCount(product.id);
+    }
+
     // Convert Decimal price to number to avoid serialization issues
     const serializedProduct = {
       ...product,
       price: parseFloat(product.price.toString()),
+      // If we just incremented the view, add 1 to the returned count
+      viewCount: incrementView ? product.viewCount + 1 : product.viewCount,
     };
 
     return { product: serializedProduct };
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return { error: "Failed to fetch product" };
+  }
+}
+
+/**
+ * Increment the view count for a product
+ */
+export async function incrementProductViewCount(productId: string) {
+  try {
+    await prisma.product.update({
+      where: { id: productId },
+      data: { viewCount: { increment: 1 } },
+    });
+
+    // Revalidate paths that might display popular products
+    revalidatePath("/");
+    revalidatePath("/produk");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to increment view count:", error);
+    return { error: "Failed to increment view count" };
+  }
+}
+
+/**
+ * Get popular products based on view count
+ */
+export async function getPopularProducts(limit: number = 3) {
+  try {
+    // Get products with the highest view counts
+    const products = await prisma.product.findMany({
+      where: {
+        // Only include products with at least 1 view
+        viewCount: { gt: 0 },
+      },
+      take: limit,
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: {
+        viewCount: "desc",
+      },
+    });
+
+    // If we don't have enough viewed products, get the most recent ones to fill the gap
+    if (products.length < limit) {
+      const additionalProducts = await prisma.product.findMany({
+        where: {
+          // Exclude products we already have
+          id: { notIn: products.map((p) => p.id) },
+        },
+        take: limit - products.length,
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      // Combine the two sets of products
+      products.push(...additionalProducts);
+    }
+
+    // Convert Decimal price to number to avoid serialization issues
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+    }));
+
+    return { products: serializedProducts };
+  } catch (error) {
+    console.error("Failed to fetch popular products:", error);
+    return { error: "Failed to fetch popular products" };
   }
 }
 
