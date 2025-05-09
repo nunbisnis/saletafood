@@ -3,6 +3,7 @@ import { getProducts } from "@/actions/product-actions";
 import { getCategories } from "@/actions/category-actions";
 import { mapDbCategoryToUiCategory } from "@/types/category";
 import { prisma } from "@/lib/db";
+import { Suspense } from "react";
 import {
   ProductBreadcrumb,
   ProductHero,
@@ -19,10 +20,13 @@ export const metadata: Metadata = {
 export default async function ProdukPage({
   searchParams,
 }: {
-  searchParams: { search?: string };
+  searchParams: Promise<{ search?: string }>;
 }) {
+  // Await the searchParams Promise
+  const resolvedSearchParams = await searchParams;
+
   // Get search query from URL if it exists
-  const searchQuery = searchParams.search || "";
+  const searchQuery = resolvedSearchParams.search || "";
 
   // Fetch products from the database with search parameter
   const { products: dbProducts } = await getProducts(undefined, searchQuery);
@@ -54,7 +58,9 @@ export default async function ProdukPage({
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ProductBreadcrumb />
       <ProductHero />
-      <AllProductsGrid products={dbProducts || []} />
+      <Suspense fallback={<div>Loading products...</div>}>
+        <AllProductsGrid products={dbProducts || []} />
+      </Suspense>
       <QuickLinks categories={categoriesWithCounts} />
     </div>
   );

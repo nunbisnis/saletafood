@@ -4,6 +4,7 @@ import { ProductFilters } from "@/components/layout/product-filters";
 import { getProductsByCategory } from "@/actions/product-actions";
 import { getCategories, getCategoryBySlug } from "@/actions/category-actions";
 import { mapDbCategoryToUiCategory } from "@/types/category";
+import { Suspense } from "react";
 import {
   ProductBreadcrumb,
   CategoryHeader,
@@ -132,7 +133,9 @@ export default async function CategoryPage({
       {/* Filters and Sorting */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <CategoryInfo name={categoryData.name} productCount={products.length} />
-        <ProductFilters />
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <ProductFilters />
+        </Suspense>
       </div>
 
       {/* Products Grid or Empty State */}
