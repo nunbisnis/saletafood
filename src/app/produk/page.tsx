@@ -13,7 +13,7 @@ import {
 } from "@/components/pages/produk";
 
 export const metadata: Metadata = {
-  title: "Produk - SaletaFood",
+  title: "Produk - Saleta Food",
   description:
     "Jelajahi produk lengkap kami dengan berbagai pilihan makanan dan minuman lezat",
 };

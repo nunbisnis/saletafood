@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SaletaFood - Welcome to SaletaFood",
+  title: "Saleta Food - Welcome to Saleta Food",
   description: "Supplier food and beverage for Hotel",
 };
 

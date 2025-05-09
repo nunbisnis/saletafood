@@ -61,11 +61,16 @@ const config: Config = {
           "0%": { opacity: "1" },
           "100%": { opacity: "0" },
         },
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         flipTop: "flipTop 0.3s ease-in forwards",
         flipBottom: "flipBottom 0.3s ease-out 0.3s forwards",
         "fade-out": "fadeOut 0.3s ease-out forwards",
+        "fade-up": "fadeUp 0.8s ease-out forwards",
       },
       colors: {
         background: "hsl(var(--background))",
