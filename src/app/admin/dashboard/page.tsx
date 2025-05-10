@@ -4,6 +4,7 @@ import {
   DashboardStats,
   ProductsTable,
   DashboardActions,
+  ProductFiltersWithSuspense,
 } from "@/components/pages/admin";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/actions/product-actions";
@@ -23,7 +24,11 @@ function mapProductStatus(status: string): string {
   }
 }
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; filter?: string }>;
+}) {
   // Check if user is authenticated
   const { userId } = await auth();
   if (!userId) {
@@ -33,11 +38,16 @@ export default async function AdminDashboardPage() {
   // Get user details
   const user = await currentUser();
 
+  // Get search and filter parameters
+  const params = await searchParams;
+  const searchQuery = params.search || "";
+  const filterValue = params.filter || "";
+
   // Fetch products from the database
-  const { products: dbProducts } = await getProducts();
+  const { products: dbProducts } = await getProducts(undefined, searchQuery);
 
   // Map database products to the format expected by the components
-  const products = dbProducts
+  let products = dbProducts
     ? dbProducts.map((product) => ({
         id: product.id,
         name: product.name,
@@ -47,6 +57,11 @@ export default async function AdminDashboardPage() {
         slug: product.slug,
       }))
     : [];
+
+  // Apply filtering if specified
+  if (filterValue && filterValue !== "all") {
+    products = products.filter((product) => product.status === filterValue);
+  }
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10">
@@ -88,18 +103,7 @@ export default async function AdminDashboardPage() {
       <div className="bg-card rounded-lg border p-4 md:p-6 mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-xl md:text-2xl font-bold">Manajemen Produk</h2>
-          <div className="w-full sm:w-auto flex gap-2">
-            <div className="relative flex-1 sm:flex-none">
-              <input
-                type="text"
-                placeholder="Cari produk..."
-                className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <Button variant="outline" size="sm" className="whitespace-nowrap">
-              Filter
-            </Button>
-          </div>
+          <ProductFiltersWithSuspense />
         </div>
 
         <ProductsTable products={products} />
@@ -107,7 +111,13 @@ export default async function AdminDashboardPage() {
         {/* Pagination */}
         <div className="flex justify-between items-center mt-6 text-sm">
           <p className="text-muted-foreground">
-            Menampilkan 1-{products.length} dari {products.length} produk
+            {products.length > 0
+              ? `Menampilkan 1-${products.length} dari ${products.length} produk`
+              : "Tidak ada produk yang ditemukan"}
+            {searchQuery && ` untuk pencarian "${searchQuery}"`}
+            {filterValue &&
+              filterValue !== "all" &&
+              ` dengan filter "${filterValue}"`}
           </p>
           <div className="flex gap-1">
             <Button variant="outline" size="sm" disabled>

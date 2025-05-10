@@ -53,7 +53,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </CardDescription>
       </CardHeader>
 
-      <CardFooter className="flex justify-between pt-0">
+      <CardFooter className="flex flex-col gap-3 pt-0">
         {product.price !== 0 && (
           <span className="text-lg font-bold text-primary">
             {new Intl.NumberFormat("id-ID", {
@@ -66,7 +66,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
         <Button
           size="sm"
-          className="gap-1"
+          className="w-full"
           disabled={product.status === "OUT_OF_STOCK"}
           asChild
         >
@@ -76,10 +76,10 @@ export function ProductCard({ product }: ProductCardProps) {
             )}.%20Boleh%20minta%20informasi%20lebih%20lanjut%3F`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1"
+            className="flex items-center justify-center gap-1"
           >
             <ShoppingCart className="h-4 w-4 flex-shrink-0" />
-            <span className="hidden sm:inline">Pesan</span>
+            <span>Pesan Sekarang</span>
           </Link>
         </Button>
       </CardFooter>

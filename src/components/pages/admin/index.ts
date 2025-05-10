@@ -11,3 +11,4 @@ export { CategoryForm } from "./categories/CategoryForm";
 export { IconSelector } from "./categories/IconSelector";
 export { HeroSettingsForm } from "./settings/HeroSettingsForm";
 export { LoginRedirect } from "./auth/LoginRedirect";
+export { ProductFiltersWithSuspense } from "./ProductFilters";

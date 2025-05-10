@@ -160,7 +160,7 @@ function ProductPopularCard({ product, rank }: ProductPopularCardProps) {
             )}
           >
             <ShoppingCart className="h-3 w-3 flex-shrink-0" />
-            <span>Pesan</span>
+            <span>Pesan Sekarang</span>
           </Link>
         </div>
       </div>
